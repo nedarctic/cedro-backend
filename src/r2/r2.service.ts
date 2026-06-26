@@ -9,7 +9,7 @@ export class R2Service {
 
     constructor(
         private readonly config: ConfigService
-    ){
+    ) {
         this.client = new S3Client({
             region: 'auto',
             endpoint: `https://${this.config.get<string>('R2_ACCOUNT_ID')}.r2.cloudflarestorage.com`,
@@ -20,11 +20,11 @@ export class R2Service {
         })
     }
 
-    async getPublicUrl (key: string) {
+    async getPublicUrl(key: string) {
         return `${this.config.get<string>('R2_PUBLIC_URL')}/${key}`
     }
 
-    async uploadFile (file: Express.Multer.File, category: string) {
+    async uploadFile(file: Express.Multer.File, category: string) {
         const key = `${category}/${Date.now()}-${file.originalname}`
         const publicUrl = this.getPublicUrl(key);
         await this.client.send(
@@ -34,10 +34,11 @@ export class R2Service {
                 Body: file.buffer,
                 ContentType: file.mimetype,
             })
-        )
+        );
+        return { key, publicUrl }
     }
 
-    async deleteFile (key: string) {
+    async deleteFile(key: string) {
         await this.client.send(
             new DeleteObjectCommand({
                 Bucket: this.config.get<string>('R2_BUCKET_NAME'),
