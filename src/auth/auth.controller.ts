@@ -9,7 +9,7 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() dto: { email: string, password: string }) {
-        const user = await this.auth.validateUser(dto.email, dto.password);
+        const { refreshToken: refresh_token, ...user } = await this.auth.validateUser(dto.email, dto.password);
 
         const { accessToken, refreshToken } = await this.auth.login(user);
 
@@ -21,8 +21,8 @@ export class AuthController {
     }
 
     @Post('refresh')
-    async refresh(@Body() dto: { token: string }) {
-        const refreshToken = await this.auth.refresh(dto.token);
-        return { refreshToken };
+    async refresh(@Body() dto: { refreshToken: string }) {
+        const { accessToken, refreshToken } = await this.auth.refresh(dto.refreshToken);
+        return { accessToken, refreshToken };
     }
 }
