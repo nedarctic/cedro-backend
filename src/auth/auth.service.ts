@@ -58,13 +58,13 @@ export class AuthService {
 
         const isValid = await bcrypt.compare(token, user.refreshToken);
 
-        if(!isValid){
+        if (!isValid) {
             throw new UnauthorizedException('Invalid token');
         }
 
-        const { refreshToken } = await this.login(user);
+        const { accessToken, refreshToken } = await this.login(user);
 
-        return refreshToken;
+        return { accessToken, refreshToken };
     }
 
 
