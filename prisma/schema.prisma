@@ -9,11 +9,45 @@ datasource db {
 }
 
 model Tour {
-  id        String    @id @default(uuid())
-  title     String
-  bookings  Booking[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt()
+  id            String      @id @default(uuid())
+  title         String
+  description   String
+  activities    String[]
+  included      String[]
+  excluded      String[]
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  dates         String
+  duration      String
+  tourImageKey  String
+  tourImageUrl  String
+  groupSize     String
+  price         String
+  itineraries   Itinerary[]
+  bookings      Booking[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt()
+  destinationId String
+}
+
+model Destination {
+  id   String @id @default(uuid())
+  name String
+  tour Tour[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model Itinerary {
+  id                String   @id @default(uuid())
+  activities        String[]
+  subtitle          String
+  day               String
+  itineraryImageKey String
+  itineraryImageUrl String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt()
+  tour              Tour?    @relation(fields: [tourId], references: [id])
+  tourId            String?
 }
 
 model Booking {
