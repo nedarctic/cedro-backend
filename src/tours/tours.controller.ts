@@ -1,4 +1,19 @@
-import { Controller, Post, Get, Param, Body, Patch, Delete, Query, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { 
+    Controller, 
+    Post, 
+    Get, 
+    Param, 
+    Body, 
+    Patch, 
+    Delete, 
+    Query, 
+    Logger, 
+    UseFilters, 
+    UseGuards, 
+    UploadedFile,
+    UseInterceptors 
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ToursService } from './tours.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
@@ -22,9 +37,14 @@ export class ToursController {
     // create a tour
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
-    @Post()
-    async createTour(@Body() dto: CreateTourDto) {
-        return await this.tours.createTour(dto);
+    @UseInterceptors(FileInterceptor('tourImage'))
+    @Post(':destinationId')
+    async createTour(
+        @Param('destinationId') destinationId: string, 
+        @Body() dto: CreateTourDto, 
+        @UploadedFile() tourImage: Express.Multer.File
+    ) {
+        return await this.tours.createTour(tourImage, destinationId, dto);
     }
 
     // get paginated tours
@@ -43,9 +63,14 @@ export class ToursController {
     // update a tour
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
+    @UseInterceptors(FileInterceptor('tourImage'))
     @Patch(':tourId')
-    async updateTour(@Param('tourId') tourId: string, @Body() dto: UpdateTourDto) {
-        return await this.tours.updateTour(tourId, dto);
+    async updateTour(
+        @Param('tourId') tourId: string, 
+        @Body() dto: UpdateTourDto, 
+        @UploadedFile() tourImage: Express.Multer.File,
+    ) {
+        return await this.tours.updateTour(tourId, dto, tourImage);
     }
 
     // delete a tour
