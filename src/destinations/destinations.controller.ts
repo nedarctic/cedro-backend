@@ -15,8 +15,8 @@ export class DestinationsController {
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @Post()
-    async createDestination(@Body() dto: { name: string }) {
-        return await this.destinations.createDestination(dto.name);
+    async createDestination(@Body() dto: { destinationName: string }) {
+        return await this.destinations.createDestination(dto.destinationName);
     }
 
     @Get()
