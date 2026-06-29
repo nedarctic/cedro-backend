@@ -541,11 +541,6 @@ export type TourOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type TourNullableScalarRelationFilter = {
-  is?: Prisma.TourWhereInput | null
-  isNot?: Prisma.TourWhereInput | null
-}
-
 export type TourScalarRelationFilter = {
   is?: Prisma.TourWhereInput
   isNot?: Prisma.TourWhereInput
@@ -634,12 +629,10 @@ export type TourCreateNestedOneWithoutItinerariesInput = {
   connect?: Prisma.TourWhereUniqueInput
 }
 
-export type TourUpdateOneWithoutItinerariesNestedInput = {
+export type TourUpdateOneRequiredWithoutItinerariesNestedInput = {
   create?: Prisma.XOR<Prisma.TourCreateWithoutItinerariesInput, Prisma.TourUncheckedCreateWithoutItinerariesInput>
   connectOrCreate?: Prisma.TourCreateOrConnectWithoutItinerariesInput
   upsert?: Prisma.TourUpsertWithoutItinerariesInput
-  disconnect?: Prisma.TourWhereInput | boolean
-  delete?: Prisma.TourWhereInput | boolean
   connect?: Prisma.TourWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TourUpdateToOneWithWhereWithoutItinerariesInput, Prisma.TourUpdateWithoutItinerariesInput>, Prisma.TourUncheckedUpdateWithoutItinerariesInput>
 }

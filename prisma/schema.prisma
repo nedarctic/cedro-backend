@@ -30,9 +30,9 @@ model Tour {
 }
 
 model Destination {
-  id   String @id @default(uuid())
-  name String
-  tour Tour[]
+  id        String   @id @default(uuid())
+  name      String
+  tour      Tour[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 }
@@ -46,8 +46,8 @@ model Itinerary {
   itineraryImageUrl String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt()
-  tour              Tour?    @relation(fields: [tourId], references: [id])
-  tourId            String?
+  tour              Tour    @relation(fields: [tourId], references: [id])
+  tourId            String
 }
 
 model Booking {
