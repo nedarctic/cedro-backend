@@ -23,6 +23,16 @@ export * from './enums.js';
  */
 export type Tour = Prisma.TourModel
 /**
+ * Model Destination
+ * 
+ */
+export type Destination = Prisma.DestinationModel
+/**
+ * Model Itinerary
+ * 
+ */
+export type Itinerary = Prisma.ItineraryModel
+/**
  * Model Booking
  * 
  */

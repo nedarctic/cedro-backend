@@ -27,22 +27,49 @@ export type AggregateTour = {
 export type TourMinAggregateOutputType = {
   id: string | null
   title: string | null
+  description: string | null
+  dates: string | null
+  duration: string | null
+  tourImageKey: string | null
+  tourImageUrl: string | null
+  groupSize: string | null
+  price: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  destinationId: string | null
 }
 
 export type TourMaxAggregateOutputType = {
   id: string | null
   title: string | null
+  description: string | null
+  dates: string | null
+  duration: string | null
+  tourImageKey: string | null
+  tourImageUrl: string | null
+  groupSize: string | null
+  price: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  destinationId: string | null
 }
 
 export type TourCountAggregateOutputType = {
   id: number
   title: number
+  description: number
+  activities: number
+  included: number
+  excluded: number
+  dates: number
+  duration: number
+  tourImageKey: number
+  tourImageUrl: number
+  groupSize: number
+  price: number
   createdAt: number
   updatedAt: number
+  destinationId: number
   _all: number
 }
 
@@ -50,22 +77,49 @@ export type TourCountAggregateOutputType = {
 export type TourMinAggregateInputType = {
   id?: true
   title?: true
+  description?: true
+  dates?: true
+  duration?: true
+  tourImageKey?: true
+  tourImageUrl?: true
+  groupSize?: true
+  price?: true
   createdAt?: true
   updatedAt?: true
+  destinationId?: true
 }
 
 export type TourMaxAggregateInputType = {
   id?: true
   title?: true
+  description?: true
+  dates?: true
+  duration?: true
+  tourImageKey?: true
+  tourImageUrl?: true
+  groupSize?: true
+  price?: true
   createdAt?: true
   updatedAt?: true
+  destinationId?: true
 }
 
 export type TourCountAggregateInputType = {
   id?: true
   title?: true
+  description?: true
+  activities?: true
+  included?: true
+  excluded?: true
+  dates?: true
+  duration?: true
+  tourImageKey?: true
+  tourImageUrl?: true
+  groupSize?: true
+  price?: true
   createdAt?: true
   updatedAt?: true
+  destinationId?: true
   _all?: true
 }
 
@@ -144,8 +198,19 @@ export type TourGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type TourGroupByOutputType = {
   id: string
   title: string
+  description: string
+  activities: string[]
+  included: string[]
+  excluded: string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
   createdAt: Date
   updatedAt: Date
+  destinationId: string
   _count: TourCountAggregateOutputType | null
   _min: TourMinAggregateOutputType | null
   _max: TourMaxAggregateOutputType | null
@@ -172,16 +237,42 @@ export type TourWhereInput = {
   NOT?: Prisma.TourWhereInput | Prisma.TourWhereInput[]
   id?: Prisma.StringFilter<"Tour"> | string
   title?: Prisma.StringFilter<"Tour"> | string
+  description?: Prisma.StringFilter<"Tour"> | string
+  activities?: Prisma.StringNullableListFilter<"Tour">
+  included?: Prisma.StringNullableListFilter<"Tour">
+  excluded?: Prisma.StringNullableListFilter<"Tour">
+  dates?: Prisma.StringFilter<"Tour"> | string
+  duration?: Prisma.StringFilter<"Tour"> | string
+  tourImageKey?: Prisma.StringFilter<"Tour"> | string
+  tourImageUrl?: Prisma.StringFilter<"Tour"> | string
+  groupSize?: Prisma.StringFilter<"Tour"> | string
+  price?: Prisma.StringFilter<"Tour"> | string
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
+  destinationId?: Prisma.StringFilter<"Tour"> | string
+  destination?: Prisma.XOR<Prisma.DestinationScalarRelationFilter, Prisma.DestinationWhereInput>
+  itineraries?: Prisma.ItineraryListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
 }
 
 export type TourOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  activities?: Prisma.SortOrder
+  included?: Prisma.SortOrder
+  excluded?: Prisma.SortOrder
+  dates?: Prisma.SortOrder
+  duration?: Prisma.SortOrder
+  tourImageKey?: Prisma.SortOrder
+  tourImageUrl?: Prisma.SortOrder
+  groupSize?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
+  destination?: Prisma.DestinationOrderByWithRelationInput
+  itineraries?: Prisma.ItineraryOrderByRelationAggregateInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
 }
 
@@ -191,16 +282,40 @@ export type TourWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TourWhereInput[]
   NOT?: Prisma.TourWhereInput | Prisma.TourWhereInput[]
   title?: Prisma.StringFilter<"Tour"> | string
+  description?: Prisma.StringFilter<"Tour"> | string
+  activities?: Prisma.StringNullableListFilter<"Tour">
+  included?: Prisma.StringNullableListFilter<"Tour">
+  excluded?: Prisma.StringNullableListFilter<"Tour">
+  dates?: Prisma.StringFilter<"Tour"> | string
+  duration?: Prisma.StringFilter<"Tour"> | string
+  tourImageKey?: Prisma.StringFilter<"Tour"> | string
+  tourImageUrl?: Prisma.StringFilter<"Tour"> | string
+  groupSize?: Prisma.StringFilter<"Tour"> | string
+  price?: Prisma.StringFilter<"Tour"> | string
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
+  destinationId?: Prisma.StringFilter<"Tour"> | string
+  destination?: Prisma.XOR<Prisma.DestinationScalarRelationFilter, Prisma.DestinationWhereInput>
+  itineraries?: Prisma.ItineraryListRelationFilter
   bookings?: Prisma.BookingListRelationFilter
 }, "id">
 
 export type TourOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  activities?: Prisma.SortOrder
+  included?: Prisma.SortOrder
+  excluded?: Prisma.SortOrder
+  dates?: Prisma.SortOrder
+  duration?: Prisma.SortOrder
+  tourImageKey?: Prisma.SortOrder
+  tourImageUrl?: Prisma.SortOrder
+  groupSize?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
   _count?: Prisma.TourCountOrderByAggregateInput
   _max?: Prisma.TourMaxOrderByAggregateInput
   _min?: Prisma.TourMinOrderByAggregateInput
@@ -212,52 +327,132 @@ export type TourScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TourScalarWhereWithAggregatesInput | Prisma.TourScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Tour"> | string
   title?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  description?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  activities?: Prisma.StringNullableListFilter<"Tour">
+  included?: Prisma.StringNullableListFilter<"Tour">
+  excluded?: Prisma.StringNullableListFilter<"Tour">
+  dates?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  duration?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  tourImageKey?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  tourImageUrl?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  groupSize?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  price?: Prisma.StringWithAggregatesFilter<"Tour"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tour"> | Date | string
+  destinationId?: Prisma.StringWithAggregatesFilter<"Tour"> | string
 }
 
 export type TourCreateInput = {
   id?: string
   title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  destination: Prisma.DestinationCreateNestedOneWithoutTourInput
+  itineraries?: Prisma.ItineraryCreateNestedManyWithoutTourInput
   bookings?: Prisma.BookingCreateNestedManyWithoutTourInput
 }
 
 export type TourUncheckedCreateInput = {
   id?: string
   title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  destinationId: string
+  itineraries?: Prisma.ItineraryUncheckedCreateNestedManyWithoutTourInput
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
 }
 
 export type TourUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destination?: Prisma.DestinationUpdateOneRequiredWithoutTourNestedInput
+  itineraries?: Prisma.ItineraryUpdateManyWithoutTourNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutTourNestedInput
 }
 
 export type TourUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destinationId?: Prisma.StringFieldUpdateOperationsInput | string
+  itineraries?: Prisma.ItineraryUncheckedUpdateManyWithoutTourNestedInput
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
 }
 
 export type TourCreateManyInput = {
   id?: string
   title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  destinationId: string
 }
 
 export type TourUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -265,29 +460,90 @@ export type TourUpdateManyMutationInput = {
 export type TourUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destinationId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type TourCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  activities?: Prisma.SortOrder
+  included?: Prisma.SortOrder
+  excluded?: Prisma.SortOrder
+  dates?: Prisma.SortOrder
+  duration?: Prisma.SortOrder
+  tourImageKey?: Prisma.SortOrder
+  tourImageUrl?: Prisma.SortOrder
+  groupSize?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
 }
 
 export type TourMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  dates?: Prisma.SortOrder
+  duration?: Prisma.SortOrder
+  tourImageKey?: Prisma.SortOrder
+  tourImageUrl?: Prisma.SortOrder
+  groupSize?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
 }
 
 export type TourMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  dates?: Prisma.SortOrder
+  duration?: Prisma.SortOrder
+  tourImageKey?: Prisma.SortOrder
+  tourImageUrl?: Prisma.SortOrder
+  groupSize?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  destinationId?: Prisma.SortOrder
+}
+
+export type TourListRelationFilter = {
+  every?: Prisma.TourWhereInput
+  some?: Prisma.TourWhereInput
+  none?: Prisma.TourWhereInput
+}
+
+export type TourOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type TourNullableScalarRelationFilter = {
+  is?: Prisma.TourWhereInput | null
+  isNot?: Prisma.TourWhereInput | null
 }
 
 export type TourScalarRelationFilter = {
@@ -295,12 +551,97 @@ export type TourScalarRelationFilter = {
   isNot?: Prisma.TourWhereInput
 }
 
+export type TourCreateactivitiesInput = {
+  set: string[]
+}
+
+export type TourCreateincludedInput = {
+  set: string[]
+}
+
+export type TourCreateexcludedInput = {
+  set: string[]
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type TourUpdateactivitiesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TourUpdateincludedInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TourUpdateexcludedInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type TourCreateNestedManyWithoutDestinationInput = {
+  create?: Prisma.XOR<Prisma.TourCreateWithoutDestinationInput, Prisma.TourUncheckedCreateWithoutDestinationInput> | Prisma.TourCreateWithoutDestinationInput[] | Prisma.TourUncheckedCreateWithoutDestinationInput[]
+  connectOrCreate?: Prisma.TourCreateOrConnectWithoutDestinationInput | Prisma.TourCreateOrConnectWithoutDestinationInput[]
+  createMany?: Prisma.TourCreateManyDestinationInputEnvelope
+  connect?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+}
+
+export type TourUncheckedCreateNestedManyWithoutDestinationInput = {
+  create?: Prisma.XOR<Prisma.TourCreateWithoutDestinationInput, Prisma.TourUncheckedCreateWithoutDestinationInput> | Prisma.TourCreateWithoutDestinationInput[] | Prisma.TourUncheckedCreateWithoutDestinationInput[]
+  connectOrCreate?: Prisma.TourCreateOrConnectWithoutDestinationInput | Prisma.TourCreateOrConnectWithoutDestinationInput[]
+  createMany?: Prisma.TourCreateManyDestinationInputEnvelope
+  connect?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+}
+
+export type TourUpdateManyWithoutDestinationNestedInput = {
+  create?: Prisma.XOR<Prisma.TourCreateWithoutDestinationInput, Prisma.TourUncheckedCreateWithoutDestinationInput> | Prisma.TourCreateWithoutDestinationInput[] | Prisma.TourUncheckedCreateWithoutDestinationInput[]
+  connectOrCreate?: Prisma.TourCreateOrConnectWithoutDestinationInput | Prisma.TourCreateOrConnectWithoutDestinationInput[]
+  upsert?: Prisma.TourUpsertWithWhereUniqueWithoutDestinationInput | Prisma.TourUpsertWithWhereUniqueWithoutDestinationInput[]
+  createMany?: Prisma.TourCreateManyDestinationInputEnvelope
+  set?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  disconnect?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  delete?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  connect?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  update?: Prisma.TourUpdateWithWhereUniqueWithoutDestinationInput | Prisma.TourUpdateWithWhereUniqueWithoutDestinationInput[]
+  updateMany?: Prisma.TourUpdateManyWithWhereWithoutDestinationInput | Prisma.TourUpdateManyWithWhereWithoutDestinationInput[]
+  deleteMany?: Prisma.TourScalarWhereInput | Prisma.TourScalarWhereInput[]
+}
+
+export type TourUncheckedUpdateManyWithoutDestinationNestedInput = {
+  create?: Prisma.XOR<Prisma.TourCreateWithoutDestinationInput, Prisma.TourUncheckedCreateWithoutDestinationInput> | Prisma.TourCreateWithoutDestinationInput[] | Prisma.TourUncheckedCreateWithoutDestinationInput[]
+  connectOrCreate?: Prisma.TourCreateOrConnectWithoutDestinationInput | Prisma.TourCreateOrConnectWithoutDestinationInput[]
+  upsert?: Prisma.TourUpsertWithWhereUniqueWithoutDestinationInput | Prisma.TourUpsertWithWhereUniqueWithoutDestinationInput[]
+  createMany?: Prisma.TourCreateManyDestinationInputEnvelope
+  set?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  disconnect?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  delete?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  connect?: Prisma.TourWhereUniqueInput | Prisma.TourWhereUniqueInput[]
+  update?: Prisma.TourUpdateWithWhereUniqueWithoutDestinationInput | Prisma.TourUpdateWithWhereUniqueWithoutDestinationInput[]
+  updateMany?: Prisma.TourUpdateManyWithWhereWithoutDestinationInput | Prisma.TourUpdateManyWithWhereWithoutDestinationInput[]
+  deleteMany?: Prisma.TourScalarWhereInput | Prisma.TourScalarWhereInput[]
+}
+
+export type TourCreateNestedOneWithoutItinerariesInput = {
+  create?: Prisma.XOR<Prisma.TourCreateWithoutItinerariesInput, Prisma.TourUncheckedCreateWithoutItinerariesInput>
+  connectOrCreate?: Prisma.TourCreateOrConnectWithoutItinerariesInput
+  connect?: Prisma.TourWhereUniqueInput
+}
+
+export type TourUpdateOneWithoutItinerariesNestedInput = {
+  create?: Prisma.XOR<Prisma.TourCreateWithoutItinerariesInput, Prisma.TourUncheckedCreateWithoutItinerariesInput>
+  connectOrCreate?: Prisma.TourCreateOrConnectWithoutItinerariesInput
+  upsert?: Prisma.TourUpsertWithoutItinerariesInput
+  disconnect?: Prisma.TourWhereInput | boolean
+  delete?: Prisma.TourWhereInput | boolean
+  connect?: Prisma.TourWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TourUpdateToOneWithWhereWithoutItinerariesInput, Prisma.TourUpdateWithoutItinerariesInput>, Prisma.TourUncheckedUpdateWithoutItinerariesInput>
 }
 
 export type TourCreateNestedOneWithoutBookingsInput = {
@@ -317,18 +658,219 @@ export type TourUpdateOneRequiredWithoutBookingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TourUpdateToOneWithWhereWithoutBookingsInput, Prisma.TourUpdateWithoutBookingsInput>, Prisma.TourUncheckedUpdateWithoutBookingsInput>
 }
 
+export type TourCreateWithoutDestinationInput = {
+  id?: string
+  title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  itineraries?: Prisma.ItineraryCreateNestedManyWithoutTourInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutTourInput
+}
+
+export type TourUncheckedCreateWithoutDestinationInput = {
+  id?: string
+  title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  itineraries?: Prisma.ItineraryUncheckedCreateNestedManyWithoutTourInput
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
+}
+
+export type TourCreateOrConnectWithoutDestinationInput = {
+  where: Prisma.TourWhereUniqueInput
+  create: Prisma.XOR<Prisma.TourCreateWithoutDestinationInput, Prisma.TourUncheckedCreateWithoutDestinationInput>
+}
+
+export type TourCreateManyDestinationInputEnvelope = {
+  data: Prisma.TourCreateManyDestinationInput | Prisma.TourCreateManyDestinationInput[]
+  skipDuplicates?: boolean
+}
+
+export type TourUpsertWithWhereUniqueWithoutDestinationInput = {
+  where: Prisma.TourWhereUniqueInput
+  update: Prisma.XOR<Prisma.TourUpdateWithoutDestinationInput, Prisma.TourUncheckedUpdateWithoutDestinationInput>
+  create: Prisma.XOR<Prisma.TourCreateWithoutDestinationInput, Prisma.TourUncheckedCreateWithoutDestinationInput>
+}
+
+export type TourUpdateWithWhereUniqueWithoutDestinationInput = {
+  where: Prisma.TourWhereUniqueInput
+  data: Prisma.XOR<Prisma.TourUpdateWithoutDestinationInput, Prisma.TourUncheckedUpdateWithoutDestinationInput>
+}
+
+export type TourUpdateManyWithWhereWithoutDestinationInput = {
+  where: Prisma.TourScalarWhereInput
+  data: Prisma.XOR<Prisma.TourUpdateManyMutationInput, Prisma.TourUncheckedUpdateManyWithoutDestinationInput>
+}
+
+export type TourScalarWhereInput = {
+  AND?: Prisma.TourScalarWhereInput | Prisma.TourScalarWhereInput[]
+  OR?: Prisma.TourScalarWhereInput[]
+  NOT?: Prisma.TourScalarWhereInput | Prisma.TourScalarWhereInput[]
+  id?: Prisma.StringFilter<"Tour"> | string
+  title?: Prisma.StringFilter<"Tour"> | string
+  description?: Prisma.StringFilter<"Tour"> | string
+  activities?: Prisma.StringNullableListFilter<"Tour">
+  included?: Prisma.StringNullableListFilter<"Tour">
+  excluded?: Prisma.StringNullableListFilter<"Tour">
+  dates?: Prisma.StringFilter<"Tour"> | string
+  duration?: Prisma.StringFilter<"Tour"> | string
+  tourImageKey?: Prisma.StringFilter<"Tour"> | string
+  tourImageUrl?: Prisma.StringFilter<"Tour"> | string
+  groupSize?: Prisma.StringFilter<"Tour"> | string
+  price?: Prisma.StringFilter<"Tour"> | string
+  createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
+  destinationId?: Prisma.StringFilter<"Tour"> | string
+}
+
+export type TourCreateWithoutItinerariesInput = {
+  id?: string
+  title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  destination: Prisma.DestinationCreateNestedOneWithoutTourInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutTourInput
+}
+
+export type TourUncheckedCreateWithoutItinerariesInput = {
+  id?: string
+  title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  destinationId: string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
+}
+
+export type TourCreateOrConnectWithoutItinerariesInput = {
+  where: Prisma.TourWhereUniqueInput
+  create: Prisma.XOR<Prisma.TourCreateWithoutItinerariesInput, Prisma.TourUncheckedCreateWithoutItinerariesInput>
+}
+
+export type TourUpsertWithoutItinerariesInput = {
+  update: Prisma.XOR<Prisma.TourUpdateWithoutItinerariesInput, Prisma.TourUncheckedUpdateWithoutItinerariesInput>
+  create: Prisma.XOR<Prisma.TourCreateWithoutItinerariesInput, Prisma.TourUncheckedCreateWithoutItinerariesInput>
+  where?: Prisma.TourWhereInput
+}
+
+export type TourUpdateToOneWithWhereWithoutItinerariesInput = {
+  where?: Prisma.TourWhereInput
+  data: Prisma.XOR<Prisma.TourUpdateWithoutItinerariesInput, Prisma.TourUncheckedUpdateWithoutItinerariesInput>
+}
+
+export type TourUpdateWithoutItinerariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destination?: Prisma.DestinationUpdateOneRequiredWithoutTourNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutTourNestedInput
+}
+
+export type TourUncheckedUpdateWithoutItinerariesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destinationId?: Prisma.StringFieldUpdateOperationsInput | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
+}
+
 export type TourCreateWithoutBookingsInput = {
   id?: string
   title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  destination: Prisma.DestinationCreateNestedOneWithoutTourInput
+  itineraries?: Prisma.ItineraryCreateNestedManyWithoutTourInput
 }
 
 export type TourUncheckedCreateWithoutBookingsInput = {
   id?: string
   title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  destinationId: string
+  itineraries?: Prisma.ItineraryUncheckedCreateNestedManyWithoutTourInput
 }
 
 export type TourCreateOrConnectWithoutBookingsInput = {
@@ -350,13 +892,109 @@ export type TourUpdateToOneWithWhereWithoutBookingsInput = {
 export type TourUpdateWithoutBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destination?: Prisma.DestinationUpdateOneRequiredWithoutTourNestedInput
+  itineraries?: Prisma.ItineraryUpdateManyWithoutTourNestedInput
 }
 
 export type TourUncheckedUpdateWithoutBookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  destinationId?: Prisma.StringFieldUpdateOperationsInput | string
+  itineraries?: Prisma.ItineraryUncheckedUpdateManyWithoutTourNestedInput
+}
+
+export type TourCreateManyDestinationInput = {
+  id?: string
+  title: string
+  description: string
+  activities?: Prisma.TourCreateactivitiesInput | string[]
+  included?: Prisma.TourCreateincludedInput | string[]
+  excluded?: Prisma.TourCreateexcludedInput | string[]
+  dates: string
+  duration: string
+  tourImageKey: string
+  tourImageUrl: string
+  groupSize: string
+  price: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TourUpdateWithoutDestinationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  itineraries?: Prisma.ItineraryUpdateManyWithoutTourNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutTourNestedInput
+}
+
+export type TourUncheckedUpdateWithoutDestinationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  itineraries?: Prisma.ItineraryUncheckedUpdateManyWithoutTourNestedInput
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
+}
+
+export type TourUncheckedUpdateManyWithoutDestinationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  activities?: Prisma.TourUpdateactivitiesInput | string[]
+  included?: Prisma.TourUpdateincludedInput | string[]
+  excluded?: Prisma.TourUpdateexcludedInput | string[]
+  dates?: Prisma.StringFieldUpdateOperationsInput | string
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  tourImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  groupSize?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -367,10 +1005,12 @@ export type TourUncheckedUpdateWithoutBookingsInput = {
  */
 
 export type TourCountOutputType = {
+  itineraries: number
   bookings: number
 }
 
 export type TourCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  itineraries?: boolean | TourCountOutputTypeCountItinerariesArgs
   bookings?: boolean | TourCountOutputTypeCountBookingsArgs
 }
 
@@ -387,6 +1027,13 @@ export type TourCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * TourCountOutputType without action
  */
+export type TourCountOutputTypeCountItinerariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ItineraryWhereInput
+}
+
+/**
+ * TourCountOutputType without action
+ */
 export type TourCountOutputTypeCountBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.BookingWhereInput
 }
@@ -395,8 +1042,21 @@ export type TourCountOutputTypeCountBookingsArgs<ExtArgs extends runtime.Types.E
 export type TourSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  description?: boolean
+  activities?: boolean
+  included?: boolean
+  excluded?: boolean
+  dates?: boolean
+  duration?: boolean
+  tourImageKey?: boolean
+  tourImageUrl?: boolean
+  groupSize?: boolean
+  price?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  destinationId?: boolean
+  destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
+  itineraries?: boolean | Prisma.Tour$itinerariesArgs<ExtArgs>
   bookings?: boolean | Prisma.Tour$bookingsArgs<ExtArgs>
   _count?: boolean | Prisma.TourCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tour"]>
@@ -404,42 +1064,96 @@ export type TourSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type TourSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  description?: boolean
+  activities?: boolean
+  included?: boolean
+  excluded?: boolean
+  dates?: boolean
+  duration?: boolean
+  tourImageKey?: boolean
+  tourImageUrl?: boolean
+  groupSize?: boolean
+  price?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  destinationId?: boolean
+  destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tour"]>
 
 export type TourSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  description?: boolean
+  activities?: boolean
+  included?: boolean
+  excluded?: boolean
+  dates?: boolean
+  duration?: boolean
+  tourImageKey?: boolean
+  tourImageUrl?: boolean
+  groupSize?: boolean
+  price?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  destinationId?: boolean
+  destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tour"]>
 
 export type TourSelectScalar = {
   id?: boolean
   title?: boolean
+  description?: boolean
+  activities?: boolean
+  included?: boolean
+  excluded?: boolean
+  dates?: boolean
+  duration?: boolean
+  tourImageKey?: boolean
+  tourImageUrl?: boolean
+  groupSize?: boolean
+  price?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  destinationId?: boolean
 }
 
-export type TourOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "createdAt" | "updatedAt", ExtArgs["result"]["tour"]>
+export type TourOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "activities" | "included" | "excluded" | "dates" | "duration" | "tourImageKey" | "tourImageUrl" | "groupSize" | "price" | "createdAt" | "updatedAt" | "destinationId", ExtArgs["result"]["tour"]>
 export type TourInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
+  itineraries?: boolean | Prisma.Tour$itinerariesArgs<ExtArgs>
   bookings?: boolean | Prisma.Tour$bookingsArgs<ExtArgs>
   _count?: boolean | Prisma.TourCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type TourIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type TourIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TourIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
+}
+export type TourIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  destination?: boolean | Prisma.DestinationDefaultArgs<ExtArgs>
+}
 
 export type $TourPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Tour"
   objects: {
+    destination: Prisma.$DestinationPayload<ExtArgs>
+    itineraries: Prisma.$ItineraryPayload<ExtArgs>[]
     bookings: Prisma.$BookingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
+    description: string
+    activities: string[]
+    included: string[]
+    excluded: string[]
+    dates: string
+    duration: string
+    tourImageKey: string
+    tourImageUrl: string
+    groupSize: string
+    price: string
     createdAt: Date
     updatedAt: Date
+    destinationId: string
   }, ExtArgs["result"]["tour"]>
   composites: {}
 }
@@ -834,6 +1548,8 @@ readonly fields: TourFieldRefs;
  */
 export interface Prisma__TourClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  destination<T extends Prisma.DestinationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DestinationDefaultArgs<ExtArgs>>): Prisma.Prisma__DestinationClient<runtime.Types.Result.GetResult<Prisma.$DestinationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  itineraries<T extends Prisma.Tour$itinerariesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tour$itinerariesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItineraryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookings<T extends Prisma.Tour$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tour$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -866,8 +1582,19 @@ export interface Prisma__TourClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface TourFieldRefs {
   readonly id: Prisma.FieldRef<"Tour", 'String'>
   readonly title: Prisma.FieldRef<"Tour", 'String'>
+  readonly description: Prisma.FieldRef<"Tour", 'String'>
+  readonly activities: Prisma.FieldRef<"Tour", 'String[]'>
+  readonly included: Prisma.FieldRef<"Tour", 'String[]'>
+  readonly excluded: Prisma.FieldRef<"Tour", 'String[]'>
+  readonly dates: Prisma.FieldRef<"Tour", 'String'>
+  readonly duration: Prisma.FieldRef<"Tour", 'String'>
+  readonly tourImageKey: Prisma.FieldRef<"Tour", 'String'>
+  readonly tourImageUrl: Prisma.FieldRef<"Tour", 'String'>
+  readonly groupSize: Prisma.FieldRef<"Tour", 'String'>
+  readonly price: Prisma.FieldRef<"Tour", 'String'>
   readonly createdAt: Prisma.FieldRef<"Tour", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tour", 'DateTime'>
+  readonly destinationId: Prisma.FieldRef<"Tour", 'String'>
 }
     
 
@@ -1122,6 +1849,10 @@ export type TourCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.TourCreateManyInput | Prisma.TourCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TourIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1192,6 +1923,10 @@ export type TourUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Tours to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TourIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1258,6 +1993,30 @@ export type TourDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Tours to delete.
    */
   limit?: number
+}
+
+/**
+ * Tour.itineraries
+ */
+export type Tour$itinerariesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Itinerary
+   */
+  select?: Prisma.ItinerarySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Itinerary
+   */
+  omit?: Prisma.ItineraryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ItineraryInclude<ExtArgs> | null
+  where?: Prisma.ItineraryWhereInput
+  orderBy?: Prisma.ItineraryOrderByWithRelationInput | Prisma.ItineraryOrderByWithRelationInput[]
+  cursor?: Prisma.ItineraryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ItineraryScalarFieldEnum | Prisma.ItineraryScalarFieldEnum[]
 }
 
 /**

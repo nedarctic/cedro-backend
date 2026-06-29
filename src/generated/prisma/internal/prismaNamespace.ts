@@ -385,6 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Tour: 'Tour',
+  Destination: 'Destination',
+  Itinerary: 'Itinerary',
   Booking: 'Booking',
   User: 'User'
 } as const
@@ -402,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tour" | "booking" | "user"
+    modelProps: "tour" | "destination" | "itinerary" | "booking" | "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -477,6 +479,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TourCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TourCountAggregateOutputType> | number
+        }
+      }
+    }
+    Destination: {
+      payload: Prisma.$DestinationPayload<ExtArgs>
+      fields: Prisma.DestinationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DestinationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DestinationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        findFirst: {
+          args: Prisma.DestinationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DestinationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        findMany: {
+          args: Prisma.DestinationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>[]
+        }
+        create: {
+          args: Prisma.DestinationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        createMany: {
+          args: Prisma.DestinationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DestinationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>[]
+        }
+        delete: {
+          args: Prisma.DestinationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        update: {
+          args: Prisma.DestinationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        deleteMany: {
+          args: Prisma.DestinationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DestinationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DestinationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>[]
+        }
+        upsert: {
+          args: Prisma.DestinationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DestinationPayload>
+        }
+        aggregate: {
+          args: Prisma.DestinationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDestination>
+        }
+        groupBy: {
+          args: Prisma.DestinationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DestinationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DestinationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DestinationCountAggregateOutputType> | number
+        }
+      }
+    }
+    Itinerary: {
+      payload: Prisma.$ItineraryPayload<ExtArgs>
+      fields: Prisma.ItineraryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ItineraryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ItineraryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>
+        }
+        findFirst: {
+          args: Prisma.ItineraryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ItineraryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>
+        }
+        findMany: {
+          args: Prisma.ItineraryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>[]
+        }
+        create: {
+          args: Prisma.ItineraryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>
+        }
+        createMany: {
+          args: Prisma.ItineraryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ItineraryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>[]
+        }
+        delete: {
+          args: Prisma.ItineraryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>
+        }
+        update: {
+          args: Prisma.ItineraryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>
+        }
+        deleteMany: {
+          args: Prisma.ItineraryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ItineraryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ItineraryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>[]
+        }
+        upsert: {
+          args: Prisma.ItineraryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ItineraryPayload>
+        }
+        aggregate: {
+          args: Prisma.ItineraryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateItinerary>
+        }
+        groupBy: {
+          args: Prisma.ItineraryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ItineraryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ItineraryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ItineraryCountAggregateOutputType> | number
         }
       }
     }
@@ -670,11 +820,47 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const TourScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  description: 'description',
+  activities: 'activities',
+  included: 'included',
+  excluded: 'excluded',
+  dates: 'dates',
+  duration: 'duration',
+  tourImageKey: 'tourImageKey',
+  tourImageUrl: 'tourImageUrl',
+  groupSize: 'groupSize',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  destinationId: 'destinationId'
+} as const
+
+export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+
+
+export const DestinationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+export type DestinationScalarFieldEnum = (typeof DestinationScalarFieldEnum)[keyof typeof DestinationScalarFieldEnum]
+
+
+export const ItineraryScalarFieldEnum = {
+  id: 'id',
+  activities: 'activities',
+  subtitle: 'subtitle',
+  day: 'day',
+  itineraryImageKey: 'itineraryImageKey',
+  itineraryImageUrl: 'itineraryImageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  tourId: 'tourId'
+} as const
+
+export type ItineraryScalarFieldEnum = (typeof ItineraryScalarFieldEnum)[keyof typeof ItineraryScalarFieldEnum]
 
 
 export const BookingScalarFieldEnum = {
@@ -899,6 +1085,8 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   tour?: Prisma.TourOmit
+  destination?: Prisma.DestinationOmit
+  itinerary?: Prisma.ItineraryOmit
   booking?: Prisma.BookingOmit
   user?: Prisma.UserOmit
 }

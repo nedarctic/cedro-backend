@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Tour: 'Tour',
+  Destination: 'Destination',
+  Itinerary: 'Itinerary',
   Booking: 'Booking',
   User: 'User'
 } as const
@@ -75,11 +77,47 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const TourScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  description: 'description',
+  activities: 'activities',
+  included: 'included',
+  excluded: 'excluded',
+  dates: 'dates',
+  duration: 'duration',
+  tourImageKey: 'tourImageKey',
+  tourImageUrl: 'tourImageUrl',
+  groupSize: 'groupSize',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  destinationId: 'destinationId'
+} as const
+
+export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+
+
+export const DestinationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+export type DestinationScalarFieldEnum = (typeof DestinationScalarFieldEnum)[keyof typeof DestinationScalarFieldEnum]
+
+
+export const ItineraryScalarFieldEnum = {
+  id: 'id',
+  activities: 'activities',
+  subtitle: 'subtitle',
+  day: 'day',
+  itineraryImageKey: 'itineraryImageKey',
+  itineraryImageUrl: 'itineraryImageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  tourId: 'tourId'
+} as const
+
+export type ItineraryScalarFieldEnum = (typeof ItineraryScalarFieldEnum)[keyof typeof ItineraryScalarFieldEnum]
 
 
 export const BookingScalarFieldEnum = {
