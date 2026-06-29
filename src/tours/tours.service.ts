@@ -34,17 +34,34 @@ export class ToursService {
 
             } : {};
 
-            const [tours, total] = await Promise.all([
+            const [data, total] = await Promise.all([
                 await this.prisma.tour.findMany({
                     take: limit,
                     skip,
                     where,
                     orderBy: {
-                        createdAt: 'desc'
+                        bookings: {
+                            _count: "desc"
+                        }
+                    },
+                    include: {
+                        _count: {
+                            select: {
+                                bookings: true,
+                            }
+                        }
                     }
                 }),
                 await this.prisma.tour.count({ where })
             ]);
+
+            const tours = data.map(({ _count, ...tour }) => {
+                const { bookings } = _count;
+                return {
+                    ...tour,
+                    totalBookings: bookings
+                }
+            })
 
             return {
                 tours,
