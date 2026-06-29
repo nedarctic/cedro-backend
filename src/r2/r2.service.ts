@@ -20,13 +20,13 @@ export class R2Service {
         })
     }
 
-    async getPublicUrl(key: string) {
+    private async getPublicUrl(key: string) {
         return `${this.config.get<string>('R2_PUBLIC_URL')}/${key}`
     }
 
     async uploadFile(file: Express.Multer.File, category: string) {
         const key = `${category}/${Date.now()}-${file.originalname}`
-        const publicUrl = this.getPublicUrl(key);
+        const publicUrl = await this.getPublicUrl(key);
         await this.client.send(
             new PutObjectCommand({
                 Bucket: this.config.get<string>('R2_BUCKET_NAME'),
