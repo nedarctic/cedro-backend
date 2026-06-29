@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
+import { ImageNotFoundException } from '../common/exceptions/image-not-found.exception';
+import { DestinationsService } from '../destinations/destinations.service';
 import { TourWhereInput } from '../generated/prisma/models';
 import { PrismaService } from '../prisma/prisma.service';
+import { R2Service } from '../r2/r2.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourNotFoundException } from './exceptions/tour-not-found.exception';
@@ -10,7 +13,9 @@ import { TourNotFoundException } from './exceptions/tour-not-found.exception';
 export class ToursService {
 
     constructor(
-        private readonly prisma: PrismaService
+        private readonly prisma: PrismaService,
+        private readonly r2: R2Service,
+        private readonly destinations: DestinationsService
     ) { }
 
     // get paginated tours
@@ -78,11 +83,22 @@ export class ToursService {
     }
 
     // create tour
-    async createTour(dto: CreateTourDto) {
+    async createTour(tourImage: Express.Multer.File, destinationId: string, dto: CreateTourDto) {
         try {
+            const destination = this.destinations.getDestination(destinationId);
+
+            if (!tourImage || !(tourImage instanceof File) || tourImage.size! > 0) {
+                throw new ImageNotFoundException('Tour')
+            }
+
+            const { key, publicUrl } = await this.r2.uploadFile(tourImage, "tours");
+
             return await this.prisma.tour.create({
                 data: {
-                    ...dto
+                    ...dto,
+                    destinationId,
+                    tourImageKey: key,
+                    tourImageUrl: publicUrl
                 }
             })
         } catch (error) {
@@ -106,7 +122,7 @@ export class ToursService {
     }
 
     // update a tour
-    async updateTour(tourId: string, dto: UpdateTourDto) {
+    async updateTour(tourId: string, dto: UpdateTourDto, tourImage?: Express.Multer.File ) {
         try {
             const tour = await this.prisma.tour.findUnique({ where: { id: tourId } });
 
@@ -114,12 +130,22 @@ export class ToursService {
                 throw new TourNotFoundException(tourId);
             }
 
+            // delete remote asset
+            await this.r2.deleteFile(tour.tourImageKey);
+
+            // upload new asset
+            const { key, publicUrl } = tourImage && tourImage.size > 0 ? 
+            await this.r2.uploadFile(tourImage, "tours") : {};
+
+
             return await this.prisma.tour.update({
                 where: {
                     id: tourId
                 },
                 data: {
-                    ...dto
+                    ...dto,
+                    tourImageKey: key ? key : tour.tourImageKey,
+                    tourImageUrl: publicUrl ? publicUrl : tour.tourImageUrl,
                 }
             })
         } catch (error) {
@@ -139,6 +165,9 @@ export class ToursService {
             if (!tour) {
                 throw new TourNotFoundException(tourId);
             }
+
+            // delete remote assets
+            await this.r2.deleteFile(tour.tourImageKey);
 
             return await this.prisma.tour.delete({
                 where: {
