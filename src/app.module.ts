@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config/validation';
 import { R2Module } from './r2/r2.module';
+import { ItinerariesModule } from './itineraries/itineraries.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -26,7 +27,7 @@ import configuration from './config/configuration';
     UsersModule, 
     BookingsModule, 
     ToursModule, 
-    PrismaModule, R2Module],
+    PrismaModule, R2Module, ItinerariesModule],
   controllers: [AppController],
   providers: [AppService],
 })
