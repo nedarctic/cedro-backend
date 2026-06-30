@@ -8,11 +8,12 @@ import {
     UseInterceptors,
     UploadedFile,
     Body,
-    UseGuards
+    UseGuards,
+    UploadedFiles
 } from '@nestjs/common';
 import { ItinerariesService } from './itineraries.service';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
@@ -30,10 +31,27 @@ export class ItinerariesController {
     @Post(':tourId')
     async createItinerary(
         @Param('tourId') tourId: string,
-        @Body() dto: CreateItineraryDto,
+        @Body() dto: { itinerary: CreateItineraryDto },
         @UploadedFile() itineraryImage: Express.Multer.File
     ) {
-        return await this.itineraries.createItinerary(tourId, dto, itineraryImage);
+        return await this.itineraries.createItinerary(tourId, dto.itinerary, itineraryImage);
+    }
+
+    @Post(":tourId/bulk")
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @UseInterceptors(FilesInterceptor("itineraryImages"))
+    async createBulkItineraries(
+        @Param("tourId") tourId: string,
+        @Body() dto: { itineraries: string },
+        @UploadedFiles() itineraryImages: Express.Multer.File[],
+    ) {
+        const itineraries: CreateItineraryDto[] = JSON.parse(dto.itineraries)
+        return this.itineraries.createBulkItineraries(
+            tourId,
+            itineraries,
+            itineraryImages,
+        );
     }
 
     @Get(':tourId')
