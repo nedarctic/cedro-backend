@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { ImageNotFoundException } from '../common/exceptions/image-not-found.exception';
 import { DestinationsService } from '../destinations/destinations.service';
@@ -12,6 +12,7 @@ import { TourNotFoundException } from './exceptions/tour-not-found.exception';
 @Injectable()
 export class ToursService {
 
+    private readonly logger = new Logger(ToursService.name)
     constructor(
         private readonly prisma: PrismaService,
         private readonly r2: R2Service,
@@ -87,7 +88,9 @@ export class ToursService {
         try {
             const destination = this.destinations.getDestination(destinationId);
 
-            if (!tourImage || !(tourImage instanceof File) || tourImage.size! > 0) {
+            this.logger.log(`Tour image size: ${tourImage.size}`);
+
+            if (!tourImage || tourImage.size === 0) {
                 throw new ImageNotFoundException('Tour')
             }
 
@@ -122,7 +125,7 @@ export class ToursService {
     }
 
     // update a tour
-    async updateTour(tourId: string, dto: UpdateTourDto, tourImage?: Express.Multer.File ) {
+    async updateTour(tourId: string, dto: UpdateTourDto, tourImage?: Express.Multer.File) {
         try {
             const tour = await this.prisma.tour.findUnique({ where: { id: tourId } });
 
@@ -134,8 +137,8 @@ export class ToursService {
             await this.r2.deleteFile(tour.tourImageKey);
 
             // upload new asset
-            const { key, publicUrl } = tourImage && tourImage.size > 0 ? 
-            await this.r2.uploadFile(tourImage, "tours") : {};
+            const { key, publicUrl } = tourImage && tourImage.size > 0 ?
+                await this.r2.uploadFile(tourImage, "tours") : {};
 
 
             return await this.prisma.tour.update({
