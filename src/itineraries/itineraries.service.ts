@@ -6,6 +6,7 @@ import { ToursService } from '../tours/tours.service';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { ItineraryNotFoundException } from './exceptions/itinerary-not-found.exception';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
+import { Itinerary } from '../generated/prisma/client';
 
 @Injectable()
 export class ItinerariesService {
@@ -37,6 +38,62 @@ export class ItinerariesService {
             })
         } catch (error) {
             throw new Error(String(error))
+        }
+    }
+
+    // create bulk itineraries - transaction
+    async createBulkItineraries(
+        tourId: string,
+        dtos: CreateItineraryDto[],
+        images: Express.Multer.File[],
+    ) {
+        const uploadedImages: {
+            key: string;
+            publicUrl: string;
+        }[] = [];
+
+        try {
+            const tour = await this.tours.getTour(tourId);
+
+            if (!tour) {
+                throw new TourNotFoundException(tourId);
+            }
+
+            for (const image of images) {
+                const uploaded = await this.r2.uploadFile(
+                    image,
+                    "itineraries"
+                );
+
+                uploadedImages.push(uploaded);
+            }
+
+            return await this.prisma.$transaction(async (tx) => {
+                const results: Itinerary[] = [];
+
+                for (let i = 0; i < dtos.length; i++) {
+                    const itinerary = await tx.itinerary.create({
+                        data: {
+                            ...dtos[i],
+                            tourId,
+                            itineraryImageKey: uploadedImages[i].key,
+                            itineraryImageUrl: uploadedImages[i].publicUrl,
+                        },
+                    });
+
+                    results.push(itinerary);
+                }
+
+                return results;
+            });
+        } catch (error) {
+            await Promise.all(
+                uploadedImages.map((img) =>
+                    this.r2.deleteFile(img.key)
+                )
+            );
+
+            throw error;
         }
     }
 
@@ -102,7 +159,7 @@ export class ItinerariesService {
     }
 
     // delete itinerary
-    async deleteItinerary (itineraryId: string) {
+    async deleteItinerary(itineraryId: string) {
         try {
             const itinerary = await this.prisma.itinerary.findUnique({
                 where: {
@@ -110,7 +167,7 @@ export class ItinerariesService {
                 }
             });
 
-            if(!itinerary){
+            if (!itinerary) {
                 throw new ItineraryNotFoundException(itineraryId);
             }
 
