@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { DestinationsService } from './destinations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -20,8 +20,8 @@ export class DestinationsController {
     }
 
     @Get()
-    async getDestinations(@Body() dto: PaginationDto) {
-        return await this.destinations.getDestinations(dto);
+    async getDestinations(@Query() pagination: PaginationDto) {
+        return await this.destinations.getDestinations(pagination);
     }
 
     @Get(':destinationId')
