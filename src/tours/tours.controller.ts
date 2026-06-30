@@ -11,7 +11,7 @@ import {
     UseFilters, 
     UseGuards, 
     UploadedFile,
-    UseInterceptors 
+    UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ToursService } from './tours.service';
@@ -41,10 +41,14 @@ export class ToursController {
     @Post(':destinationId')
     async createTour(
         @Param('destinationId') destinationId: string, 
-        @Body() dto: CreateTourDto, 
+        @Body() dto: {tour: string}, 
         @UploadedFile() tourImage: Express.Multer.File
     ) {
-        return await this.tours.createTour(tourImage, destinationId, dto);
+        const tour = JSON.parse(dto.tour);
+        for(const item in tour){
+            this.logger.log(item)
+        }
+        return await this.tours.createTour(tourImage, destinationId, tour);
     }
 
     // get paginated tours
