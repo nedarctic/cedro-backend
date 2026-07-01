@@ -1,4 +1,97 @@
-import { Controller } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Patch,
+    Post,
+    Query,
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Roles } from '../auth/decorators/role.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RoleGuard } from '../auth/guards/role.guard';
+import { UserRole } from '../generated/prisma/enums';
+import { BlogsService } from './blogs.service';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
+import { type Blog, type Section } from '../generated/prisma/client';
 
 @Controller('blogs')
-export class BlogsController {}
+export class BlogsController {
+    constructor(
+        private readonly blogsService: BlogsService
+    ) { }
+
+    // create a new blog
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: "blogImage" },
+        { name: "sectionImages" }
+    ]))
+    @Post()
+    async createBlog(
+        @Body() dto: {blog: string},
+        @UploadedFiles() files: { blogImage: Express.Multer.File, sectionImages: Express.Multer.File[] }
+    ) {
+        const blogData = JSON.parse(dto.blog) as CreateBlogDto;
+        return await this.blogsService.createBlog(
+            files.blogImage,
+            files.sectionImages,
+            blogData
+        );
+    }
+
+    // get paginated blogs
+    @Get()
+    async getBlogs(@Query() pagination: PaginationDto) {
+        return await this.blogsService.getBlogs(pagination);
+    }
+
+    // get blog by id
+    @Get(':blogId')
+    async getBlogById(@Query('blogId') blogId: string) {
+        return await this.blogsService.getBlogById(blogId);
+    }
+
+    // update blog by id
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @Patch(':blogId')
+    async updateBlog(
+        @Query('blogId') blogId: string,
+        @Body() dto: Blog
+    ) {
+        return await this.blogsService.updateBlog(blogId, dto);
+    }
+
+    // update blog section by id
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @Patch(':sectionId/section')
+    async updateBlogSection(
+        @Query('sectionId') sectionId: string,
+        @Body() dto: Section
+    ) {
+        return await this.blogsService.updateBlogSection(sectionId, dto);
+    }
+
+    // delete blog by id
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @Post(':blogId/delete')
+    async deleteBlog(@Query('blogId') blogId: string) {
+        return await this.blogsService.deleteBlog(blogId);
+    }
+
+    // delete blog section by id
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @Post(':sectionId/section/delete')
+    async deleteBlogSection(@Query('sectionId') sectionId: string) {
+        return await this.blogsService.deleteBlogSection(sectionId);
+    }
+}
