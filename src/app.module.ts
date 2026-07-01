@@ -12,6 +12,7 @@ import { R2Module } from './r2/r2.module';
 import { ItinerariesModule } from './itineraries/itineraries.module';
 import { DestinationsModule } from './destinations/destinations.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { TeamModule } from './team/team.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -29,7 +30,7 @@ import configuration from './config/configuration';
     UsersModule, 
     BookingsModule, 
     ToursModule, 
-    PrismaModule, R2Module, ItinerariesModule, DestinationsModule, BlogsModule],
+    PrismaModule, R2Module, ItinerariesModule, DestinationsModule, BlogsModule, TeamModule],
   controllers: [AppController],
   providers: [AppService],
 })
