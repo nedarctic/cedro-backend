@@ -142,47 +142,56 @@ export class BlogsService {
         }[],
         sectionImages: Express.Multer.File[]
     ) {
-        const uploadedSectionImages: { key: string; publicUrl: string }[] = [];
+
+        const uploadedSectionImages = new Map<number, { key: string; publicUrl: string }>();
+
         try {
-            const sectionData = sections.map(async (section, index) => {
-                const sectionImage = sectionImages[index];
-                let sectionImageKey: string | null = null;
-                let sectionImageUrl: string | null = null;
+            const sectionData = await Promise.all(
+                sections.map(async (section, index) => {
+                    const sectionImage = sectionImages[index];
 
-                if (sectionImage) {
-                    const { key, publicUrl } = await this.r2.uploadFile(sectionImage, 'sections');
-                    uploadedSectionImages.push({ key, publicUrl });
-                    sectionImageKey = key;
-                    sectionImageUrl = publicUrl;
-                }
+                    let sectionImageKey: string | null = null;
+                    let sectionImageUrl: string | null = null;
 
-                return {
-                    ...section,
-                    blogId,
-                    sectionImageKey,
-                    sectionImageUrl,
-                };
-            });
+                    if (sectionImage && sectionImage.size > 0) {
+                        const uploaded = await this.r2.uploadFile(
+                            sectionImage,
+                            'blogs/sections'
+                        );
 
-            const createdSections = await this.prisma.$transaction(async (tx) => {
+                        uploadedSectionImages.set(index, uploaded);
+
+                        sectionImageKey = uploaded.key;
+                        sectionImageUrl = uploaded.publicUrl;
+                    }
+
+                    return {
+                        ...section,
+                        blogId,
+                        sectionImageKey,
+                        sectionImageUrl,
+                    };
+                })
+            );
+
+            return await this.prisma.$transaction(async (tx) => {
                 const results: Section[] = [];
 
-                for (let i = 0; i < sectionData.length; i++) {
-                    const section = await tx.section.create({
-                        data: await sectionData[i],
-                    });
-
-                    results.push(section);
+                for (const data of sectionData) {
+                    results.push(
+                        await tx.section.create({
+                            data,
+                        })
+                    );
                 }
 
                 return results;
             });
 
-            return createdSections;
         } catch (error) {
 
             await Promise.all(
-                uploadedSectionImages.map((img) =>
+                Array.from(uploadedSectionImages.values()).map((img) =>
                     this.r2.deleteFile(img.key)
                 )
             );
