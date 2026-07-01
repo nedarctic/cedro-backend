@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { PaginationDto } from '../common/dtos/pagination.dto';
-import { BlogWhereInput } from '../generated/prisma/models';
-import { BlogNotFoundException } from './exceptions/blog-not-found.exception';
-import { CreateBlogDto } from './dto/create-blog.dto';
-import { R2Service } from '../r2/r2.service';
-import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Blog, Section } from '../generated/prisma/client';
+import { BlogWhereInput } from '../generated/prisma/models';
+import { PrismaService } from '../prisma/prisma.service';
+import { R2Service } from '../r2/r2.service';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { BlogNotFoundException } from './exceptions/blog-not-found.exception';
 import { SectionNotFoundException } from './exceptions/section-not-found.exception';
 
 @Injectable()
