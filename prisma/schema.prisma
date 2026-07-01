@@ -90,7 +90,7 @@ model Section {
   content         String
   sectionImageKey String?
   sectionImageUrl String?
-  blog            Blog     @relation(fields: [blogId], references: [id])
+  blog            Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId          String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt()
