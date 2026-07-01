@@ -57,7 +57,8 @@ export const ModelName = {
   Booking: 'Booking',
   User: 'User',
   Blog: 'Blog',
-  Section: 'Section'
+  Section: 'Section',
+  TeamMember: 'TeamMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -175,6 +176,20 @@ export const SectionScalarFieldEnum = {
 } as const
 
 export type SectionScalarFieldEnum = (typeof SectionScalarFieldEnum)[keyof typeof SectionScalarFieldEnum]
+
+
+export const TeamMemberScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  designation: 'designation',
+  description: 'description',
+  memberImageKey: 'memberImageKey',
+  memberImageUrl: 'memberImageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
 
 
 export const SortOrder = {

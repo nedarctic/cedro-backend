@@ -74,3 +74,8 @@ export type Blog = Prisma.BlogModel
  * 
  */
 export type Section = Prisma.SectionModel
+/**
+ * Model TeamMember
+ * 
+ */
+export type TeamMember = Prisma.TeamMemberModel
