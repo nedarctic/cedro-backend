@@ -388,7 +388,9 @@ export const ModelName = {
   Destination: 'Destination',
   Itinerary: 'Itinerary',
   Booking: 'Booking',
-  User: 'User'
+  User: 'User',
+  Blog: 'Blog',
+  Section: 'Section'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tour" | "destination" | "itinerary" | "booking" | "user"
+    modelProps: "tour" | "destination" | "itinerary" | "booking" | "user" | "blog" | "section"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +780,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Blog: {
+      payload: Prisma.$BlogPayload<ExtArgs>
+      fields: Prisma.BlogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BlogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BlogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>
+        }
+        findFirst: {
+          args: Prisma.BlogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BlogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>
+        }
+        findMany: {
+          args: Prisma.BlogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>[]
+        }
+        create: {
+          args: Prisma.BlogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>
+        }
+        createMany: {
+          args: Prisma.BlogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BlogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>[]
+        }
+        delete: {
+          args: Prisma.BlogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>
+        }
+        update: {
+          args: Prisma.BlogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>
+        }
+        deleteMany: {
+          args: Prisma.BlogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BlogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BlogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>[]
+        }
+        upsert: {
+          args: Prisma.BlogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlogPayload>
+        }
+        aggregate: {
+          args: Prisma.BlogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBlog>
+        }
+        groupBy: {
+          args: Prisma.BlogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BlogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlogCountAggregateOutputType> | number
+        }
+      }
+    }
+    Section: {
+      payload: Prisma.$SectionPayload<ExtArgs>
+      fields: Prisma.SectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>
+        }
+        findFirst: {
+          args: Prisma.SectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>
+        }
+        findMany: {
+          args: Prisma.SectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>[]
+        }
+        create: {
+          args: Prisma.SectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>
+        }
+        createMany: {
+          args: Prisma.SectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>[]
+        }
+        delete: {
+          args: Prisma.SectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>
+        }
+        update: {
+          args: Prisma.SectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.SectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.SectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SectionPayload>
+        }
+        aggregate: {
+          args: Prisma.SectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSection>
+        }
+        groupBy: {
+          args: Prisma.SectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -887,6 +1037,35 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const BlogScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  intro: 'intro',
+  conclusion: 'conclusion',
+  blogImageKey: 'blogImageKey',
+  blogImageUrl: 'blogImageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
+
+
+export const SectionScalarFieldEnum = {
+  id: 'id',
+  section: 'section',
+  subtitle: 'subtitle',
+  content: 'content',
+  sectionImageKey: 'sectionImageKey',
+  sectionImageUrl: 'sectionImageUrl',
+  blogId: 'blogId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SectionScalarFieldEnum = (typeof SectionScalarFieldEnum)[keyof typeof SectionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1089,6 +1268,8 @@ export type GlobalOmitConfig = {
   itinerary?: Prisma.ItineraryOmit
   booking?: Prisma.BookingOmit
   user?: Prisma.UserOmit
+  blog?: Prisma.BlogOmit
+  section?: Prisma.SectionOmit
 }
 
 /* Types for Logging */

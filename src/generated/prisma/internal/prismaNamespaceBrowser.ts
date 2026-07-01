@@ -55,7 +55,9 @@ export const ModelName = {
   Destination: 'Destination',
   Itinerary: 'Itinerary',
   Booking: 'Booking',
-  User: 'User'
+  User: 'User',
+  Blog: 'Blog',
+  Section: 'Section'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -144,6 +146,35 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const BlogScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  intro: 'intro',
+  conclusion: 'conclusion',
+  blogImageKey: 'blogImageKey',
+  blogImageUrl: 'blogImageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
+
+
+export const SectionScalarFieldEnum = {
+  id: 'id',
+  section: 'section',
+  subtitle: 'subtitle',
+  content: 'content',
+  sectionImageKey: 'sectionImageKey',
+  sectionImageUrl: 'sectionImageUrl',
+  blogId: 'blogId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SectionScalarFieldEnum = (typeof SectionScalarFieldEnum)[keyof typeof SectionScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -42,3 +42,13 @@ export type Booking = Prisma.BookingModel
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Blog
+ * 
+ */
+export type Blog = Prisma.BlogModel
+/**
+ * Model Section
+ * 
+ */
+export type Section = Prisma.SectionModel

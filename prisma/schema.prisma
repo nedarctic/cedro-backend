@@ -46,7 +46,7 @@ model Itinerary {
   itineraryImageUrl String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt()
-  tour              Tour    @relation(fields: [tourId], references: [id])
+  tour              Tour     @relation(fields: [tourId], references: [id])
   tourId            String
 }
 
@@ -69,6 +69,31 @@ model User {
   role         UserRole @default(ADMIN)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt()
+}
+
+model Blog {
+  id           String    @id() @default(uuid())
+  title        String
+  intro        String
+  conclusion   String
+  blogImageKey String
+  blogImageUrl String
+  sections     Section[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt()
+}
+
+model Section {
+  id              String   @id() @default(uuid())
+  section         String
+  subtitle        String
+  content         String
+  sectionImageKey String?
+  sectionImageUrl String?
+  blog            Blog     @relation(fields: [blogId], references: [id])
+  blogId          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt()
 }
 
 enum UserRole {
