@@ -11,6 +11,7 @@ import { validationSchema } from './config/validation';
 import { R2Module } from './r2/r2.module';
 import { ItinerariesModule } from './itineraries/itineraries.module';
 import { DestinationsModule } from './destinations/destinations.module';
+import { BlogsModule } from './blogs/blogs.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -28,7 +29,7 @@ import configuration from './config/configuration';
     UsersModule, 
     BookingsModule, 
     ToursModule, 
-    PrismaModule, R2Module, ItinerariesModule, DestinationsModule],
+    PrismaModule, R2Module, ItinerariesModule, DestinationsModule, BlogsModule],
   controllers: [AppController],
   providers: [AppService],
 })
