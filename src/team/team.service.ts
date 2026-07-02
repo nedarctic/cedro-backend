@@ -5,6 +5,7 @@ import { TeamMemberWhereInput } from '../generated/prisma/models';
 import { MemberNotFoundException } from './exceptions/member-not-found.exception';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 @Injectable()
 export class TeamService {
@@ -14,8 +15,14 @@ export class TeamService {
     ) { }
 
     // get team members
-    async getTeam(search?: string) {
+    async getTeam(pagination: PaginationDto) {
         try {
+            const {
+                limit = 10,
+                page = 1,
+                search
+            } = pagination;
+
             const searchTerm = search?.trim();
             const where: TeamMemberWhereInput = searchTerm ? {
                 OR: [
@@ -40,9 +47,24 @@ export class TeamService {
                 ]
             } : {};
 
-            return await this.prisma.teamMember.findMany({
-                where
-            })
+            const [team, total] = await Promise.all([
+                await this.prisma.teamMember.findMany({
+                    take: limit,
+                    skip: (page - 1) * limit,
+                    where
+                }),
+                await this.prisma.teamMember.count({ where }),
+            ])
+
+            return {
+                team,
+                meta: {
+                    page,
+                    limit,
+                    total,
+                    totalPages: Math.ceil(total / limit)
+                }
+            }
         } catch (error) {
             throw error;
         }
@@ -118,7 +140,7 @@ export class TeamService {
     }
 
     // delete member
-    async deleteMember(memberId: string) { 
+    async deleteMember(memberId: string) {
         try {
             const member = await this.prisma.teamMember.findUnique({
                 where: {
@@ -126,7 +148,7 @@ export class TeamService {
                 }
             });
 
-            if(!member) {
+            if (!member) {
                 throw new MemberNotFoundException(memberId);
             }
 
