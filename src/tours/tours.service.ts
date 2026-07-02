@@ -112,7 +112,7 @@ export class ToursService {
     // get a tour by id
     async getTour(tourId: string) {
         try {
-            const tour = await this.prisma.tour.findUnique({ where: { id: tourId } });
+            const tour = await this.prisma.tour.findUnique({ where: { id: tourId }, include: { bookings: true } });
 
             if (!tour) {
                 throw new TourNotFoundException(tourId);
