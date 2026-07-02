@@ -14,12 +14,10 @@ export class DestinationsService {
     async getDestinations(dto: PaginationDto) {
         try {
             const {
-                limit = 10,
+                limit,
                 page = 1,
                 search
             } = dto;
-
-            const skip = (page - 1) * limit;
 
             const searchTerm = search && search.trim();
 
@@ -47,8 +45,10 @@ export class DestinationsService {
 
             const [data, total] = await Promise.all([
                 await this.prisma.destination.findMany({
-                    take: limit,
-                    skip,
+                    ...(limit !== undefined && {
+                        take: limit,
+                        skip: (page - 1) * limit
+                    }),
                     where,
                     orderBy: {
                         createdAt: 'desc'
@@ -78,7 +78,7 @@ export class DestinationsService {
                     page,
                     limit,
                     total,
-                    totalPages: Math.ceil(total / limit)
+                    ...(limit !== undefined && { totalPages: Math.ceil(total / limit) })
                 }
             }
         } catch (error) {
@@ -141,7 +141,7 @@ export class DestinationsService {
     }
 
     // delete destination
-    async deleteDestination (destinationId: string) {
+    async deleteDestination(destinationId: string) {
         try {
             const destination = await this.prisma.destination.findUnique({
                 where: {
@@ -149,7 +149,7 @@ export class DestinationsService {
                 }
             });
 
-            if(!destination){
+            if (!destination) {
                 throw new DestinationNotFoundException(destinationId);
             }
 
