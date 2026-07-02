@@ -12,6 +12,7 @@ export class DestinationsController {
         private readonly destinations: DestinationsService
     ) { }
 
+    // create destination
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @Post()
@@ -19,16 +20,19 @@ export class DestinationsController {
         return await this.destinations.createDestination(dto.destinationName);
     }
 
+    // get destinations
     @Get()
     async getDestinations(@Query() pagination: PaginationDto) {
         return await this.destinations.getDestinations(pagination);
     }
 
+    // get destination by id
     @Get(':destinationId')
     async getDestination(@Param('destinationId') destinationId: string) {
         return await this.destinations.getDestination(destinationId);
     }
 
+    // update destination by id
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @Patch(':destinationId')
@@ -39,6 +43,7 @@ export class DestinationsController {
         return await this.destinations.updateDestination(destinationId, dto.name);
     }
 
+    // delete destination
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @Delete(':destinationId')
