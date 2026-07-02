@@ -51,7 +51,7 @@ export class BlogsService {
                 ],
             } : {};
 
-            const [blogs, total] = await this.prisma.$transaction([
+            const [data, total] = await this.prisma.$transaction([
                 this.prisma.blog.findMany({
                     where: searchQuery,
                     skip,
@@ -64,6 +64,12 @@ export class BlogsService {
                     where: searchQuery,
                 }),
             ]);
+
+            const blogs = data.map(blog => ({
+                ...blog,
+                createdAt: new Date().toLocaleDateString('en-KE', {day: '2-digit', month: 'short', year: 'numeric'}),
+                updatedAt: new Date().toLocaleDateString('en-KE', {day: '2-digit', month: 'short', year: 'numeric'}),
+            }))
 
             return {
                 blogs,
