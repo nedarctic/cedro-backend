@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { DestinationWhereInput } from '../generated/prisma/models';
 import { PrismaService } from '../prisma/prisma.service';
@@ -6,6 +6,7 @@ import { DestinationNotFoundException } from './exceptions/destination-not-found
 
 @Injectable()
 export class DestinationsService {
+    private readonly logger = new Logger(DestinationsService.name);
     constructor(
         private readonly prisma: PrismaService
     ) { }
@@ -76,7 +77,7 @@ export class DestinationsService {
                 destinations,
                 meta: {
                     page,
-                    limit,
+                    ...(limit !== undefined && {limit}),
                     total,
                     ...(limit !== undefined && { totalPages: Math.ceil(total / limit) })
                 }

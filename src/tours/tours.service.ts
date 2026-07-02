@@ -23,12 +23,10 @@ export class ToursService {
     async getTours(dto: PaginationDto) {
         try {
             const {
-                limit = 10,
+                limit,
                 page = 1,
                 search
             } = dto;
-
-            const skip = (page - 1) * limit;
 
             const searchTerm = search && search.trim();
 
@@ -42,8 +40,10 @@ export class ToursService {
 
             const [data, total] = await Promise.all([
                 await this.prisma.tour.findMany({
-                    take: limit,
-                    skip,
+                    ...(limit !== undefined && {
+                        take: limit,
+                        skip: (page - 1) * limit
+                    }),
                     where,
                     orderBy: {
                         bookings: {
@@ -73,9 +73,9 @@ export class ToursService {
                 tours,
                 meta: {
                     page,
-                    limit,
+                    ...(limit !== undefined && { limit }),
                     total,
-                    totalPages: Math.ceil(total / limit)
+                    ...(limit !== undefined && { totalPages: Math.ceil(total / limit) })
                 }
             }
         } catch (error) {
