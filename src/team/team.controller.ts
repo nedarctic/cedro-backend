@@ -19,6 +19,7 @@ import { TeamService } from './team.service';
 import { UserRole } from '../generated/prisma/enums';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 @Controller('team')
 export class TeamController {
@@ -35,8 +36,8 @@ export class TeamController {
     }
 
     @Get()
-    async getTeam(@Query() search: string) {
-        return await this.team.getTeam(search);
+    async getTeam(@Query() pagination: PaginationDto) {
+        return await this.team.getTeam(pagination);
     }
 
     @Get(':memberId')
