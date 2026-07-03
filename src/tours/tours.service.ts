@@ -112,13 +112,31 @@ export class ToursService {
     // get a tour by id
     async getTour(tourId: string) {
         try {
-            const tour = await this.prisma.tour.findUnique({ where: { id: tourId }, include: { bookings: true } });
+            const [tour, totalBookings] = await Promise.all([
+                await this.prisma.tour.findUnique({
+                    where: {
+                        id: tourId
+                    },
+                }),
+                await this.prisma.tour.findUnique({
+                    where: {
+                        id: tourId
+                    },
+                    select: {
+                        _count: {
+                            select: {
+                                bookings: true
+                            }
+                        }
+                    }
+                }).then(count => count?._count.bookings!)
+            ])
 
             if (!tour) {
                 throw new TourNotFoundException(tourId);
             }
 
-            return tour;
+            return { ...tour, totalBookings };
         } catch (error) {
             throw new Error(String(error));
         }
