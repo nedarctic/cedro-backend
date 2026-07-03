@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Param,
     Patch,
     Post,
     Query,
@@ -53,7 +54,7 @@ export class BlogsController {
 
     // get blog by id
     @Get(':blogId')
-    async getBlogById(@Query('blogId') blogId: string) {
+    async getBlogById(@Param('blogId') blogId: string) {
         return await this.blogsService.getBlogById(blogId);
     }
 
