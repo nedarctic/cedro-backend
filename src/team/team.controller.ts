@@ -27,6 +27,7 @@ export class TeamController {
         private readonly team: TeamService
     ) { }
 
+    // create a new team member
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @UseInterceptors(FileInterceptor('memberImage'))
@@ -35,16 +36,19 @@ export class TeamController {
         return this.team.createMember(dto, memberImage)
     }
 
+    // get team members
     @Get()
     async getTeam(@Query() pagination: PaginationDto) {
         return await this.team.getTeam(pagination);
     }
 
+    // get a member
     @Get(':memberId')
     async getMember(@Param('memberId') memberId: string) {
         return await this.getMember(memberId);
     }
 
+    // update a team member
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @UseInterceptors(FileInterceptor('memberImage'))
@@ -57,9 +61,9 @@ export class TeamController {
         return await this.team.updateMember(memberId, dto, memberImage)
     }
 
+    // delete a member
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
-    @UseInterceptors(FileInterceptor('memberImage'))
     @Delete(':memberId')
     async deleteMember(@Param('memberId') memberId: string) {
         return await this.deleteMember(memberId);
