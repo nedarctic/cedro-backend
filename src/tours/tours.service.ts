@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UploadedFiles } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { ImageNotFoundException } from '../common/exceptions/image-not-found.exception';
 import { DestinationsService } from '../destinations/destinations.service';
@@ -7,7 +7,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { R2Service } from '../r2/r2.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
+import { UpdateTourDto as UpdateTourDtoTest } from './dto/update-tour-test.dto'
 import { TourNotFoundException } from './exceptions/tour-not-found.exception';
+import { Itinerary, Tour } from '../generated/prisma/client';
 
 @Injectable()
 export class ToursService {
@@ -197,6 +199,157 @@ export class ToursService {
             })
         } catch (error) {
             throw new Error(String(error));
+        }
+    }
+
+    // update a tour test
+    async updateTourTest(
+        files: {
+            tourImage: Express.Multer.File,
+            updatedItineraryImage: Express.Multer.File[],
+            newItineraryImage: Express.Multer.File[]
+        },
+        dto: UpdateTourDtoTest,
+        tourId: string,
+        newItinerariesImageRels: Record<number, number>,
+        updatedItinerariesImageRels: Record<number, number>
+    ) {
+        try {
+
+            const {
+                tourImage,
+                newItineraryImage: newItinerariesImages,
+                updatedItineraryImage: updatedItinerariesImages,
+            } = files;
+
+            // get new, updated and deleted itineraries
+            const updatedIncomingItineraries = dto.itineraries?.filter(itinerary => itinerary.id !== undefined);
+            const newIncomingItineraries = dto.itineraries?.filter(itinerary => itinerary.id === undefined);
+            const deletedItineraries: { id: string }[] = [];
+
+            const incomingItinerariesIds = dto.itineraries?.map(itinerary => itinerary.id)
+            const incomingIdsSet = new Set(incomingItinerariesIds);
+
+            const existingItineraries = await this.prisma.itinerary.findMany();
+            for (const itinerary of existingItineraries) {
+                if (!incomingIdsSet.has(itinerary.id)) {
+                    deletedItineraries.push({ id: itinerary.id });
+                }
+            }
+
+            // get tour
+            const tour = await this.prisma.tour.findUnique({ where: { id: tourId } });
+
+            if (!tour) {
+                throw new TourNotFoundException(tourId);
+            }
+
+            // delete remote tour image
+            if (files.tourImage && files.tourImage.size > 0) {
+                await this.r2.deleteFile(tour.tourImageKey);
+            }
+
+            // upload tour image
+            let tourImageUrl: string = '';
+            let tourImageKey: string = '';
+
+            if (files.tourImage && files.tourImage.size > 0) {
+                const { key, publicUrl } = await this.r2.uploadFile(tourImage, 'tours');
+                tourImageKey = key;
+                tourImageUrl = publicUrl;
+            }
+
+            // delete remote itinerary assets
+            for (const { id } of deletedItineraries) {
+                const itinerary = await this.prisma.itinerary.findUnique({ where: { id } });
+                await this.r2.deleteFile(itinerary?.itineraryImageKey!);
+            }
+
+            // upload new itinerary images && construct new itineraries for db insert
+            const newItineraries = newIncomingItineraries ? await Promise.all(
+                newIncomingItineraries.map(async (newItinerary, index) => {
+                    const imageId = newItinerariesImageRels[index];
+                    let newItineraryImage: Express.Multer.File | undefined;
+                    let itineraryImageUrl: string | undefined;
+                    let itineraryImageKey: string | undefined;
+
+                    if (imageId !== undefined && newItinerariesImages[imageId]?.size > 0) {
+                        newItineraryImage = newItinerariesImages[imageId]
+                    }
+
+                    if (newItineraryImage) {
+                        const { publicUrl, key } = await this.r2.uploadFile(newItineraryImage, 'itineraries');
+                        itineraryImageKey = key;
+                        itineraryImageUrl = publicUrl;
+                    }
+
+                    return {
+                        ...newItinerary,
+                        day: newItinerary.day ?? '',
+                        subtitle: newItinerary.subtitle ?? '',
+                        itineraryImageUrl: itineraryImageUrl ?? '',
+                        itineraryImageKey: itineraryImageKey ?? ''
+                    }
+                })
+            ) : undefined;
+
+            // upload updated itinerary images && construct update payloads for db update
+            const updatedItineraries = updatedIncomingItineraries ? await Promise.all(
+                updatedIncomingItineraries.map(async ({ id, ...updatedItinerary }, index) => {
+                    const imageId = updatedItinerariesImageRels[index];
+                    let updatedItineraryImage: Express.Multer.File | undefined;
+                    let itineraryImageUrl: string | undefined;
+                    let itineraryImageKey: string | undefined;
+
+                    if (imageId !== undefined && updatedItinerariesImages[imageId]?.size > 0) {
+                        updatedItineraryImage = updatedItinerariesImages[imageId]
+                    }
+
+                    if (updatedItineraryImage) {
+                        const { publicUrl, key } = await this.r2.uploadFile(updatedItineraryImage, 'itineraries');
+                        itineraryImageKey = key;
+                        itineraryImageUrl = publicUrl;
+                    }
+
+                    return {
+                        where: { id: id! },
+                        data: {
+                            ...updatedItinerary,
+                            itineraryImageUrl,
+                            itineraryImageKey
+                        }
+                    }
+                })
+            ) : undefined;
+
+
+            // nested tour update
+            return await this.prisma.tour.update({
+                where: {
+                    id: tourId
+                },
+                data: {
+                    title: dto.title,
+                    description: dto.description,
+                    groupSize: dto.groupSize,
+                    price: dto.price,
+                    dates: dto.dates,
+                    duration: dto.duration,
+                    activities: dto.activities,
+                    included: dto.included,
+                    excluded: dto.excluded,
+                    tourImageKey,
+                    tourImageUrl,
+                    itineraries: {
+                        create: newItineraries,
+                        update: updatedItineraries,
+                        deleteMany: deletedItineraries
+                    }
+                }
+            })
+
+        } catch (error) {
+            throw error;
         }
     }
 }
