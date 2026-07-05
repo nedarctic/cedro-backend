@@ -1,19 +1,20 @@
-import { 
-    Controller, 
-    Post, 
-    Get, 
-    Param, 
-    Body, 
-    Patch, 
-    Delete, 
-    Query, 
-    Logger, 
-    UseFilters, 
-    UseGuards, 
+import {
+    Controller,
+    Post,
+    Get,
+    Param,
+    Body,
+    Patch,
+    Delete,
+    Query,
+    Logger,
+    UseFilters,
+    UseGuards,
     UploadedFile,
     UseInterceptors,
+    UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ToursService } from './tours.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
@@ -40,12 +41,12 @@ export class ToursController {
     @UseInterceptors(FileInterceptor('tourImage'))
     @Post(':destinationId')
     async createTour(
-        @Param('destinationId') destinationId: string, 
-        @Body() dto: {tour: string}, 
+        @Param('destinationId') destinationId: string,
+        @Body() dto: { tour: string },
         @UploadedFile() tourImage: Express.Multer.File
     ) {
         const tour = JSON.parse(dto.tour);
-        for(const item in tour){
+        for (const item in tour) {
             this.logger.log(item)
         }
         return await this.tours.createTour(tourImage, destinationId, tour);
@@ -70,11 +71,45 @@ export class ToursController {
     @UseInterceptors(FileInterceptor('tourImage'))
     @Patch(':tourId')
     async updateTour(
-        @Param('tourId') tourId: string, 
-        @Body() dto: UpdateTourDto, 
+        @Param('tourId') tourId: string,
+        @Body() dto: UpdateTourDto,
         @UploadedFile() tourImage: Express.Multer.File,
     ) {
         return await this.tours.updateTour(tourId, dto, tourImage);
+    }
+
+    // update a tour test
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: "tourImage" },
+        { name: "updatedItineraryImage" },
+        { name: "newItineraryImage" }
+    ]))
+    @Patch(':tourId/test')
+    async updateTourTest(
+        @UploadedFiles() files: {
+            tourImage: Express.Multer.File;
+            updatedItineraryImage: Express.Multer.File[];
+            newItineraryImage: Express.Multer.File[];
+        },
+        @Body() dto: {
+            tour: UpdateTourDto;
+            newItinerariesImageRels: string;
+            updatedItinerariesImageRels: string;
+        },
+        @Param('tourId') tourId: string
+    ) {
+        const newItinerariesImageRels: Record<number, number> = JSON.parse(dto.newItinerariesImageRels);
+        const updatedItinerariesImageRels: Record<number, number> = JSON.parse(dto.updatedItinerariesImageRels);
+
+        return await this.tours.updateTourTest(
+            files,
+            dto.tour,
+            tourId,
+            newItinerariesImageRels,
+            updatedItinerariesImageRels
+        )
     }
 
     // delete a tour
