@@ -119,6 +119,10 @@ export class ToursService {
                     where: {
                         id: tourId
                     },
+                    include: {
+                        itineraries: true,
+                        destination: true,
+                    }
                 }),
                 await this.prisma.tour.findUnique({
                     where: {
