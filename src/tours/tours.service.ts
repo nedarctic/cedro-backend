@@ -210,28 +210,32 @@ export class ToursService {
     async updateTourTest(
         files: {
             tourImage: Express.Multer.File,
-            updatedItineraryImage: Express.Multer.File[],
-            newItineraryImage: Express.Multer.File[]
+            updatedItinerariesImages: Express.Multer.File[],
+            newItinerariesImages: Express.Multer.File[]
         },
         dto: UpdateTourDtoTest,
+        updatedIncomingIts: string,
+        newIncomingIts: string,
         tourId: string,
-        newItinerariesImageRels: Record<number, number>,
         updatedItinerariesImageRels: Record<number, number>
     ) {
         try {
 
             const {
                 tourImage,
-                newItineraryImage: newItinerariesImages,
-                updatedItineraryImage: updatedItinerariesImages,
+                newItinerariesImages: newItinerariesImages,
+                updatedItinerariesImages: updatedItinerariesImages,
             } = files;
 
+            const updatedIts = JSON.parse(updatedIncomingIts);
+            const newIts = JSON.parse(newIncomingIts);
+
             // get new, updated and deleted itineraries
-            const updatedIncomingItineraries = dto.itineraries?.filter(itinerary => itinerary.id !== undefined);
-            const newIncomingItineraries = dto.itineraries?.filter(itinerary => itinerary.id === undefined);
+            const updatedIncomingItineraries = updatedIts;
+            const newIncomingItineraries = newIts;
             const deletedItineraries: { id: string }[] = [];
 
-            const incomingItinerariesIds = dto.itineraries?.map(itinerary => itinerary.id)
+            const incomingItinerariesIds = updatedIncomingItineraries.map(itinerary => itinerary.id)
             const incomingIdsSet = new Set(incomingItinerariesIds);
 
             const existingItineraries = await this.prisma.itinerary.findMany();
@@ -272,7 +276,7 @@ export class ToursService {
             // upload new itinerary images && construct new itineraries for db insert
             const newItineraries = newIncomingItineraries ? await Promise.all(
                 newIncomingItineraries.map(async (newItinerary, index) => {
-                    const imageId = newItinerariesImageRels[index];
+                    const imageId = index;
                     let newItineraryImage: Express.Multer.File | undefined;
                     let itineraryImageUrl: string | undefined;
                     let itineraryImageKey: string | undefined;

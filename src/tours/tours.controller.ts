@@ -83,31 +83,32 @@ export class ToursController {
     @Roles(UserRole.SUPER_ADMIN)
     @UseInterceptors(FileFieldsInterceptor([
         { name: "tourImage" },
-        { name: "updatedItineraryImage" },
-        { name: "newItineraryImage" }
+        { name: "updatedItinerariesImages" },
+        { name: "newItinerariesImages" }
     ]))
     @Patch(':tourId/test')
     async updateTourTest(
         @UploadedFiles() files: {
             tourImage: Express.Multer.File;
-            updatedItineraryImage: Express.Multer.File[];
-            newItineraryImage: Express.Multer.File[];
+            updatedItinerariesImages: Express.Multer.File[];
+            newItinerariesImages: Express.Multer.File[];
         },
         @Body() dto: {
             tour: UpdateTourDto;
-            newItinerariesImageRels: string;
-            updatedItinerariesImageRels: string;
+            newItineraries: string;
+            updatedItineraries: string;
+            updatedItinerariesRels: string;
         },
         @Param('tourId') tourId: string
     ) {
-        const newItinerariesImageRels: Record<number, number> = JSON.parse(dto.newItinerariesImageRels);
-        const updatedItinerariesImageRels: Record<number, number> = JSON.parse(dto.updatedItinerariesImageRels);
+        const updatedItinerariesImageRels: Record<number, number> = JSON.parse(dto.updatedItinerariesRels);
 
         return await this.tours.updateTourTest(
             files,
             dto.tour,
+            dto.updatedItineraries,
+            dto.newItineraries,
             tourId,
-            newItinerariesImageRels,
             updatedItinerariesImageRels
         )
     }
