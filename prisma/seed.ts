@@ -71,6 +71,7 @@ async function main() {
             tourImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/tours/1780401381076-Masai%20Mara%20National%20Reserve.jpg"
         }
     });
+
     const watamuTour = await prisma.tour.create({
         data: {
             destinationId: kenya.id,
@@ -98,6 +99,113 @@ async function main() {
             tourImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/tours/1780985618226-Watamu%20Marine%20National%20Park.jpg"
         }
     });
+
+    // itineraries
+    await prisma.itinerary.createMany({
+        data: [
+            {
+                day: "Day 1",
+                subtitle: "Arrival and evening game drive",
+                tourId: maraTour.id,
+                activities: [
+                    "Arrival at camp",
+                    "Evening game drive",
+                    "Sundowner by the river"
+                ],
+                itineraryImageKey: "itineraries/marait1.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/marait1.jpg"
+            },
+            {
+                day: "Day 2",
+                subtitle: "Full-day Maasai Mara exploration",
+                tourId: maraTour.id,
+                activities: [
+                    "Morning game drive",
+                    "Picnic lunch in the bush",
+                    "Visit Maasai village"
+                ],
+                itineraryImageKey: "itineraries/marait2.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/marait3.jpg"
+            },
+            {
+                day: "Day 3",
+                subtitle: "Wildlife morning and departure",
+                tourId: maraTour.id,
+                activities: [
+                    "Early morning safari",
+                    "Brunch at camp",
+                    "Checkout and transfer"
+                ],
+                itineraryImageKey: "itineraries/marait3.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/marait3.jpg"
+            },
+        ]
+    });
+
+    await prisma.itinerary.createMany({
+        data: [
+            {
+                day: "Day 1",
+                subtitle: "Coastal welcome and sunset beach",
+                tourId: watamuTour.id,
+                activities: [
+                    "Arrival and beach walk",
+                    "Welcome briefing",
+                    "Sunset dinner"
+                ],
+                itineraryImageKey: "itineraries/watamuit1.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/watamuit1.jpg"
+            },
+            {
+                day: "Day 2",
+                subtitle: "Marine park snorkeling and relaxation",
+                tourId: watamuTour.id,
+                activities: [
+                    "Snorkeling in the marine park",
+                    "Glass-bottom boat tour",
+                    "Relax on Turtle Bay beach"
+                ],
+                itineraryImageKey: "itineraries/watamuit2.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/watamuit2.jpg"
+            },
+            {
+                day: "Day 3",
+                subtitle: "Culture and coastal leisure",
+                tourId: watamuTour.id,
+                activities: [
+                    "Visit local village",
+                    "Lunch at a seaside restaurant",
+                    "Swimming and leisure"
+                ],
+                itineraryImageKey: "itineraries/watamuit3.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/watamuit3.jpg"
+            },
+            {
+                day: "Day 4",
+                subtitle: "Reef diving and beach time",
+                tourId: watamuTour.id,
+                activities: [
+                    "Scuba dive or snorkeling",
+                    "Beach time",
+                    "Sunset cruise"
+                ],
+                itineraryImageKey: "itineraries/watamuit4.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/watamuit4.jpg"
+            },
+            {
+                day: "Day 5",
+                subtitle: "Departure after coastal breakfast",
+                tourId: watamuTour.id,
+                activities: [
+                    "Breakfast by the ocean",
+                    "Pack and check out",
+                    "Transfer to airport"
+                ],
+                itineraryImageKey: "itineraries/watamuit5.jpg",
+                itineraryImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/itineraries/watamuit5.jpg"
+            },
+        ]
+    })
 
     // booking
     await prisma.booking.createMany({
