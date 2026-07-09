@@ -196,7 +196,7 @@ export class ToursService {
             }
 
             // delete remote assets
-            await this.r2.deleteFile(tour.tourImageKey);
+            tour.tourImageKey && await this.r2.deleteFile(tour.tourImageKey);
 
             return await this.prisma.tour.delete({
                 where: {
