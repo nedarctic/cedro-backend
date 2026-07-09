@@ -15,7 +15,7 @@ model Tour {
   activities    String[]
   included      String[]
   excluded      String[]
-  destination   Destination @relation(fields: [destinationId], references: [id])
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
   dates         String
   duration      String
   tourImageKey  String
@@ -46,7 +46,7 @@ model Itinerary {
   itineraryImageUrl String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt()
-  tour              Tour     @relation(fields: [tourId], references: [id])
+  tour              Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
   tourId            String
 }
 
