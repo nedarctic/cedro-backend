@@ -78,7 +78,7 @@ export class ToursController {
         return await this.tours.updateTour(tourId, dto, tourImage);
     }
 
-    // update a tour test
+    // update a tour test    
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
     @UseInterceptors(FileFieldsInterceptor([
@@ -89,27 +89,22 @@ export class ToursController {
     @Patch(':tourId/test')
     async updateTourTest(
         @UploadedFiles() files: {
-            tourImage: Express.Multer.File;
+            tourImage: Express.Multer.File[];
             updatedItinerariesImages: Express.Multer.File[];
             newItinerariesImages: Express.Multer.File[];
         },
         @Body() dto: {
-            tour: UpdateTourDto;
+            tour: string;
             newItineraries: string;
             updatedItineraries: string;
             updatedItinerariesRels: string;
         },
         @Param('tourId') tourId: string
     ) {
-        const updatedItinerariesImageRels: Record<number, number> = JSON.parse(dto.updatedItinerariesRels);
-
         return await this.tours.updateTourTest(
             files,
-            dto.tour,
-            dto.updatedItineraries,
-            dto.newItineraries,
-            tourId,
-            updatedItinerariesImageRels
+            dto,
+            tourId
         )
     }
 
