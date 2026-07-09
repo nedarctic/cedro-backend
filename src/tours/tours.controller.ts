@@ -61,7 +61,6 @@ export class ToursController {
     // get tour by id
     @Get(':tourId')
     async getTour(@Param('tourId') tourId: string) {
-        this.logger.log(`id received ${tourId}`)
         return await this.tours.getTour(tourId);
     }
 
