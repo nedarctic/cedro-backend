@@ -120,7 +120,7 @@ export class ToursService {
                     include: {
                         itineraries: {
                             orderBy: {
-                                day: "desc"
+                                day: "asc"
                             }
                         },
                         destination: true,
