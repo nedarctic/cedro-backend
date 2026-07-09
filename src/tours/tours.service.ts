@@ -1,4 +1,4 @@
-import { Injectable, Logger, UploadedFiles } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { ImageNotFoundException } from '../common/exceptions/image-not-found.exception';
 import { DestinationsService } from '../destinations/destinations.service';
@@ -7,9 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { R2Service } from '../r2/r2.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
-import { UpdateTourDto as UpdateTourDtoTest } from './dto/update-tour-test.dto'
 import { TourNotFoundException } from './exceptions/tour-not-found.exception';
-import { Itinerary, Tour } from '../generated/prisma/client';
 
 @Injectable()
 export class ToursService {
@@ -120,9 +118,13 @@ export class ToursService {
                         id: tourId
                     },
                     include: {
-                        itineraries: true,
+                        itineraries: {
+                            orderBy: {
+                                day: "desc"
+                            }
+                        },
                         destination: true,
-                    }
+                    },
                 }),
                 await this.prisma.tour.findUnique({
                     where: {
@@ -209,26 +211,47 @@ export class ToursService {
     // update a tour test
     async updateTourTest(
         files: {
-            tourImage: Express.Multer.File,
+            tourImage: Express.Multer.File[],
             updatedItinerariesImages: Express.Multer.File[],
             newItinerariesImages: Express.Multer.File[]
         },
-        dto: UpdateTourDtoTest,
-        updatedIncomingIts: string,
-        newIncomingIts: string,
-        tourId: string,
-        updatedItinerariesImageRels: Record<number, number>
+        dto: {
+            tour: string;
+            newItineraries?: string;
+            updatedItineraries?: string;
+            updatedItinerariesRels?: string;
+        },
+        tourId: string
     ) {
         try {
 
             const {
                 tourImage,
-                newItinerariesImages: newItinerariesImages,
-                updatedItinerariesImages: updatedItinerariesImages,
+                newItinerariesImages,
+                updatedItinerariesImages,
             } = files;
 
-            const updatedIts = JSON.parse(updatedIncomingIts);
-            const newIts = JSON.parse(newIncomingIts);
+            const {
+                newItineraries: newIncomingIts,
+                tour: incomingTour,
+                updatedItineraries: updatedIncomingIts,
+                updatedItinerariesRels
+            } = dto;
+
+            const tourData: UpdateTourDto = JSON.parse(incomingTour);
+
+            const updatedIts: {
+                id: string;
+                subtitle: string;
+                activities: string[];
+            }[] = updatedIncomingIts && JSON.parse(updatedIncomingIts);
+
+            const newIts: {
+                subtitle: string;
+                activities: string[];
+            }[] = newIncomingIts && JSON.parse(newIncomingIts);
+
+            const updatedItsRls: string[] = updatedItinerariesRels && JSON.parse(updatedItinerariesRels);
 
             // get new, updated and deleted itineraries
             const updatedIncomingItineraries = updatedIts;
@@ -237,11 +260,13 @@ export class ToursService {
 
             const incomingItinerariesIds = updatedIncomingItineraries.map(itinerary => itinerary.id)
             const incomingIdsSet = new Set(incomingItinerariesIds);
-
-            const existingItineraries = await this.prisma.itinerary.findMany();
-            for (const itinerary of existingItineraries) {
-                if (!incomingIdsSet.has(itinerary.id)) {
-                    deletedItineraries.push({ id: itinerary.id });
+            
+            const existingItinerariesIds = (await this.prisma.itinerary.findMany({ where: { tourId } }).then(res => res)).map(({id}) => id)
+            this.logger.log('existing ids', )
+            
+            for (const id of existingItinerariesIds) {
+                if (!incomingIdsSet.has(id)) {
+                    deletedItineraries.push({ id: id });
                 }
             }
 
@@ -253,19 +278,12 @@ export class ToursService {
             }
 
             // delete remote tour image
-            if (files.tourImage && files.tourImage.size > 0) {
+            if (tourImage && tourImage.length && tourImage[0].size > 0 && tour.tourImageKey) {
                 await this.r2.deleteFile(tour.tourImageKey);
             }
 
             // upload tour image
-            let tourImageUrl: string = '';
-            let tourImageKey: string = '';
-
-            if (files.tourImage && files.tourImage.size > 0) {
-                const { key, publicUrl } = await this.r2.uploadFile(tourImage, 'tours');
-                tourImageKey = key;
-                tourImageUrl = publicUrl;
-            }
+            const { key: tourImageKey, publicUrl: tourImageUrl } = (tourImage && tourImage.length) ? await this.r2.uploadFile(tourImage[0], 'tours') : {};
 
             // delete remote itinerary assets
             for (const { id } of deletedItineraries) {
@@ -274,18 +292,17 @@ export class ToursService {
             }
 
             // upload new itinerary images && construct new itineraries for db insert
-            const newItineraries = newIncomingItineraries ? await Promise.all(
-                newIncomingItineraries.map(async (newItinerary, index) => {
-                    const imageId = index;
+            const newItineraries = newIncomingItineraries && newIncomingItineraries.length ? await Promise.all(
+                newIncomingItineraries.map(async ({ ...newItinerary }, index) => {
                     let newItineraryImage: Express.Multer.File | undefined;
-                    let itineraryImageUrl: string | undefined;
-                    let itineraryImageKey: string | undefined;
+                    let itineraryImageUrl: string = '';
+                    let itineraryImageKey: string = '';
 
-                    if (imageId !== undefined && newItinerariesImages[imageId]?.size > 0) {
-                        newItineraryImage = newItinerariesImages[imageId]
+                    if (newItinerariesImages[index]?.size > 0) {
+                        newItineraryImage = newItinerariesImages[index];
                     }
 
-                    if (newItineraryImage) {
+                    if (newItineraryImage && newItineraryImage.size > 0) {
                         const { publicUrl, key } = await this.r2.uploadFile(newItineraryImage, 'itineraries');
                         itineraryImageKey = key;
                         itineraryImageUrl = publicUrl;
@@ -293,30 +310,33 @@ export class ToursService {
 
                     return {
                         ...newItinerary,
-                        day: newItinerary.day ?? '',
-                        subtitle: newItinerary.subtitle ?? '',
-                        itineraryImageUrl: itineraryImageUrl ?? '',
-                        itineraryImageKey: itineraryImageKey ?? ''
+                        day: `Day ${index}`,
+                        subtitle: newItinerary.subtitle,
+                        itineraryImageUrl: itineraryImageUrl,
+                        itineraryImageKey: itineraryImageKey
                     }
                 })
             ) : undefined;
 
             // upload updated itinerary images && construct update payloads for db update
-            const updatedItineraries = updatedIncomingItineraries ? await Promise.all(
+            const updatedItineraries = updatedIncomingItineraries && updatedIncomingItineraries.length ? await Promise.all(
                 updatedIncomingItineraries.map(async ({ id, ...updatedItinerary }, index) => {
-                    const imageId = updatedItinerariesImageRels[index];
+
                     let updatedItineraryImage: Express.Multer.File | undefined;
                     let itineraryImageUrl: string | undefined;
                     let itineraryImageKey: string | undefined;
 
-                    if (imageId !== undefined && updatedItinerariesImages[imageId]?.size > 0) {
-                        updatedItineraryImage = updatedItinerariesImages[imageId]
-                    }
+                    if (updatedItsRls && updatedItsRls.length) {
+                        const imageId = updatedItsRls[index];
+                        if (updatedItinerariesImages[imageId]?.size > 0) {
+                            updatedItineraryImage = updatedItinerariesImages[imageId]
+                        }
 
-                    if (updatedItineraryImage) {
-                        const { publicUrl, key } = await this.r2.uploadFile(updatedItineraryImage, 'itineraries');
-                        itineraryImageKey = key;
-                        itineraryImageUrl = publicUrl;
+                        if (updatedItineraryImage) {
+                            const { publicUrl, key } = await this.r2.uploadFile(updatedItineraryImage, 'itineraries');
+                            itineraryImageKey = key;
+                            itineraryImageUrl = publicUrl;
+                        }
                     }
 
                     return {
@@ -329,23 +349,13 @@ export class ToursService {
                     }
                 })
             ) : undefined;
-
-
             // nested tour update
             return await this.prisma.tour.update({
                 where: {
                     id: tourId
                 },
                 data: {
-                    title: dto.title,
-                    description: dto.description,
-                    groupSize: dto.groupSize,
-                    price: dto.price,
-                    dates: dto.dates,
-                    duration: dto.duration,
-                    activities: dto.activities,
-                    included: dto.included,
-                    excluded: dto.excluded,
+                    ...tourData,
                     tourImageKey,
                     tourImageUrl,
                     itineraries: {
