@@ -51,7 +51,10 @@ export class TeamService {
                 await this.prisma.teamMember.findMany({
                     take: limit,
                     skip: (page - 1) * limit,
-                    where
+                    where,
+                    orderBy: {
+                        level: "asc"
+                    }
                 }),
                 await this.prisma.teamMember.count({ where }),
             ])
@@ -152,13 +155,14 @@ export class TeamService {
                 throw new MemberNotFoundException(memberId);
             }
 
-            await this.r2.deleteFile(member.memberImageKey);
+            member.memberImageKey && await this.r2.deleteFile(member.memberImageKey);
 
             return await this.prisma.teamMember.delete({
                 where: {
                     id: memberId
                 }
-            })
+            });
+
         } catch (error) {
             throw error;
         }
