@@ -9,4 +9,7 @@ export class CreateMemberDto {
 
     @IsString()
     description!: string;
+
+    @IsString()
+    level!: string;
 }
