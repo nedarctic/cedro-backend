@@ -88,8 +88,6 @@ export class ToursService {
         try {
             const destination = this.destinations.getDestination(destinationId);
 
-            this.logger.log(`Tour image size: ${tourImage.size}`);
-
             if (!tourImage || tourImage.size === 0) {
                 throw new ImageNotFoundException('Tour')
             }
@@ -251,7 +249,7 @@ export class ToursService {
                 activities: string[];
             }[] = newIncomingIts && JSON.parse(newIncomingIts);
 
-            const updatedItsRls: string[] = updatedItinerariesRels && JSON.parse(updatedItinerariesRels);
+            const { updatedItinerariesRels: updatedItsRls }: { updatedItinerariesRels: string[] } = updatedItinerariesRels && JSON.parse(updatedItinerariesRels);
 
             // get new, updated and deleted itineraries
             const updatedIncomingItineraries = updatedIts;
@@ -260,10 +258,9 @@ export class ToursService {
 
             const incomingItinerariesIds = updatedIncomingItineraries.map(itinerary => itinerary.id)
             const incomingIdsSet = new Set(incomingItinerariesIds);
-            
-            const existingItinerariesIds = (await this.prisma.itinerary.findMany({ where: { tourId } }).then(res => res)).map(({id}) => id)
-            this.logger.log('existing ids', )
-            
+
+            const existingItinerariesIds = (await this.prisma.itinerary.findMany({ where: { tourId } }).then(res => res)).map(({ id }) => id)
+
             for (const id of existingItinerariesIds) {
                 if (!incomingIdsSet.has(id)) {
                     deletedItineraries.push({ id: id });
@@ -327,12 +324,13 @@ export class ToursService {
                     let itineraryImageKey: string | undefined;
 
                     if (updatedItsRls && updatedItsRls.length) {
-                        const imageId = updatedItsRls[index];
-                        if (updatedItinerariesImages[imageId]?.size > 0) {
+                        const imageId = updatedItsRls.indexOf(id);
+
+                        if (imageId !== -1 && updatedItinerariesImages[imageId]?.size > 0) {
                             updatedItineraryImage = updatedItinerariesImages[imageId]
                         }
 
-                        if (updatedItineraryImage) {
+                        if (updatedItineraryImage && updatedItineraryImage.size > 0) {
                             const { publicUrl, key } = await this.r2.uploadFile(updatedItineraryImage, 'itineraries');
                             itineraryImageKey = key;
                             itineraryImageUrl = publicUrl;
