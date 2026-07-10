@@ -100,6 +100,7 @@ model TeamMember {
   id             String   @id() @default(uuid())
   name           String
   designation    String
+  level          String?
   description    String
   memberImageKey String
   memberImageUrl String

@@ -306,7 +306,7 @@ async function main() {
                 designation: "Founder & CEO",
                 description: "Leads the company with a strong vision for sustainable travel and a commitment to authentic African adventures.",
                 memberImageKey: "members/johndoe.jpg",
-                memberImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/members/johndoe.jpg"
+                memberImageUrl: "https://pub-5cee8e6d1a574b6c84697dfdb9beba4a.r2.dev/members/john.jpg"
             },
             {
                 name: "Gladys Thorne",
