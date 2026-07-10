@@ -12,4 +12,8 @@ export class UpdateMemberDto {
     @IsOptional()
     @IsString()
     description?: string;
+
+    @IsOptional()
+    @IsString()
+    level?: string;
 }
