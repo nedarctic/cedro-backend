@@ -114,6 +114,13 @@ export class BookingsService {
             const booking = await this.prisma.booking.findUnique({
                 where: {
                     id: bookingId
+                },
+                include: {
+                    tour: {
+                        include: {
+                            destination: true
+                        }
+                    }
                 }
             });
 
