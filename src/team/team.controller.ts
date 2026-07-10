@@ -66,6 +66,6 @@ export class TeamController {
     @Roles(UserRole.SUPER_ADMIN)
     @Delete(':memberId')
     async deleteMember(@Param('memberId') memberId: string) {
-        return await this.deleteMember(memberId);
+        return await this.team.deleteMember(memberId);
     }
 }
