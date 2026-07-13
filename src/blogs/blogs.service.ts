@@ -51,8 +51,8 @@ export class BlogsService {
                 ],
             } : {};
 
-            const [data, total] = await this.prisma.$transaction([
-                this.prisma.blog.findMany({
+            const [data, total] = await Promise.all([
+                await this.prisma.blog.findMany({
                     where: searchQuery,
                     skip,
                     take: limit,
@@ -60,15 +60,15 @@ export class BlogsService {
                         createdAt: 'desc',
                     },
                 }),
-                this.prisma.blog.count({
+                await this.prisma.blog.count({
                     where: searchQuery,
                 }),
             ]);
 
             const blogs = data.map(blog => ({
                 ...blog,
-                createdAt: new Date().toLocaleDateString('en-KE', {day: '2-digit', month: 'short', year: 'numeric'}),
-                updatedAt: new Date().toLocaleDateString('en-KE', {day: '2-digit', month: 'short', year: 'numeric'}),
+                createdAt: new Date().toLocaleDateString('en-KE', { day: '2-digit', month: 'short', year: 'numeric' }),
+                updatedAt: new Date().toLocaleDateString('en-KE', { day: '2-digit', month: 'short', year: 'numeric' }),
             }))
 
             return {
@@ -106,7 +106,12 @@ export class BlogsService {
     }
 
     // create a new blog
-    async createBlog(blogImage: Express.Multer.File, sectionImages: Express.Multer.File[], dto: CreateBlogDto) {
+    async createBlog(
+        blogImage: Express.Multer.File[],
+        sectionImages: Express.Multer.File[],
+        dto: CreateBlogDto,
+        sectionsWithImages: string[]
+    ) {
         try {
             const {
                 title,
@@ -116,23 +121,46 @@ export class BlogsService {
             } = dto;
 
             // upload blog image to R2
-            const { key, publicUrl } = await this.r2.uploadFile(blogImage, 'blogs');
+
+            const { key, publicUrl } = await this.r2.uploadFile(blogImage[0], 'blogs');
+
+            const sectionsData = await Promise.all(sections.map(async (section, index) => {
+                
+                const imageId = sectionsWithImages.indexOf(section.id);
+
+                let sectionImageUrl: string | undefined;
+                let sectionImageKey: string | undefined;
+
+                if (imageId !== undefined && imageId !== null && imageId !== -1) {
+                    const sectionImage = sectionImages[imageId];
+                    const { key, publicUrl } = await this.r2.uploadFile(sectionImage, "itineraries/sections")
+                    sectionImageKey = key;
+                    sectionImageUrl = publicUrl;
+                }
+
+                return {
+                    ...section,
+                    sectionImageUrl,
+                    sectionImageKey
+                };
+            }))
 
             // create the blog in the database
-            const blog = await this.prisma.blog.create({
+            return await this.prisma.blog.create({
                 data: {
                     title,
                     intro,
                     conclusion,
                     blogImageKey: key,
                     blogImageUrl: publicUrl,
+                    sections: {
+                        createMany: {
+                            data: sectionsData
+                        }
+                    }
                 }
             });
 
-            // create the blog sections
-            await this.createBlogSections(blog.id, sections, sectionImages);
-
-            return blog;
         } catch (error) {
             throw error;
         }
@@ -265,7 +293,7 @@ export class BlogsService {
             }
 
             // delete the blog image from R2
-            await this.r2.deleteFile(blog.blogImageKey);
+            blog.blogImageKey && await this.r2.deleteFile(blog.blogImageKey);
 
             // delete the blog sections images from R2
             const sections = await this.prisma.section.findMany({
@@ -279,40 +307,9 @@ export class BlogsService {
             }
 
             // delete the blog and its sections from the database
-            await this.prisma.$transaction(async (tx) => {
-                await tx.blog.delete({
-                    where: { id: blogId },
-                });
-            });
+            await this.prisma.blog.delete({ where: { id: blogId } })
 
             return { message: 'Blog deleted successfully' };
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // delete blog section by id
-    async deleteBlogSection(sectionId: string) {
-        try {
-            const section = await this.prisma.section.findUnique({
-                where: { id: sectionId },
-            });
-
-            if (!section) {
-                throw new SectionNotFoundException(sectionId);
-            }
-
-            // delete the section image from R2
-            if (section.sectionImageKey) {
-                await this.r2.deleteFile(section.sectionImageKey);
-            }
-
-            // delete the section from the database
-            await this.prisma.section.delete({
-                where: { id: sectionId },
-            });
-
-            return { message: 'Section deleted successfully' };
         } catch (error) {
             throw error;
         }
