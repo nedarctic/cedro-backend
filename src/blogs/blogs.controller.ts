@@ -10,7 +10,6 @@ import {
     UploadedFiles,
     UseGuards,
     UseInterceptors,
-    Logger
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../auth/decorators/role.decorator';
@@ -24,7 +23,6 @@ import { type Blog, type Section } from '../generated/prisma/client';
 
 @Controller('blogs')
 export class BlogsController {
-    private readonly logger = new Logger(BlogsController.name);
     constructor(
         private readonly blogsService: BlogsService
     ) { }
