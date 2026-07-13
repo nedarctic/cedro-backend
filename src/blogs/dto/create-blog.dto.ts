@@ -13,6 +13,7 @@ export class CreateBlogDto {
     @IsArray()
     @ArrayNotEmpty()
     sections!: {
+        id: string;
         section: string;
         subtitle: string;
         content: string;
