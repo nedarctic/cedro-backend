@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { Blog, Section } from '../generated/prisma/client';
 import { BlogWhereInput } from '../generated/prisma/models';
@@ -7,9 +7,12 @@ import { R2Service } from '../r2/r2.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { BlogNotFoundException } from './exceptions/blog-not-found.exception';
 import { SectionNotFoundException } from './exceptions/section-not-found.exception';
+import { SectionDto, UpdateBlogDto } from './dto/update-blog.dto';
+import { string } from 'joi';
 
 @Injectable()
 export class BlogsService {
+    private readonly logger = new Logger(BlogsService.name);
     constructor(
         private readonly prisma: PrismaService,
         private readonly r2: R2Service
@@ -91,7 +94,11 @@ export class BlogsService {
             const blog = await this.prisma.blog.findUnique({
                 where: { id: blogId },
                 include: {
-                    sections: true,
+                    sections: {
+                        orderBy: {
+                            section: "asc"
+                        }
+                    },
                 },
             });
 
@@ -125,7 +132,7 @@ export class BlogsService {
             const { key, publicUrl } = await this.r2.uploadFile(blogImage[0], 'blogs');
 
             const sectionsData = await Promise.all(sections.map(async (section, index) => {
-                
+
                 const imageId = sectionsWithImages.indexOf(section.id);
 
                 let sectionImageUrl: string | undefined;
@@ -234,7 +241,12 @@ export class BlogsService {
     }
 
     // update blog by id
-    async updateBlog(blogId: string, dto: Blog) {
+    async updateBlog(
+        blogId: string,
+        dto: UpdateBlogDto,
+        files: { blogImage: Express.Multer.File[], sectionImages: Express.Multer.File[] },
+        sectionsWithImages: string[]
+    ) {
         try {
             const blog = await this.prisma.blog.findUnique({
                 where: { id: blogId },
@@ -244,10 +256,180 @@ export class BlogsService {
                 throw new BlogNotFoundException(blogId);
             }
 
+            const {
+                title,
+                intro,
+                conclusion,
+                sections,
+            } = dto;
+
+            const {
+                blogImage,
+                sectionImages
+            } = files;
+
+            const blogDataPromise = async () => {
+
+                let blogImageKey: string | undefined;
+                let blogImageUrl: string | undefined;
+
+                if (blogImage && blogImage[0].size > 0) {
+                    await this.r2.deleteFile(blog.blogImageKey);
+                    const { key, publicUrl } = await this.r2.uploadFile(blogImage[0], "blogs");
+                    blogImageKey = key;
+                    blogImageUrl = publicUrl;
+                }
+
+                return {
+                    title,
+                    intro,
+                    blogImageKey,
+                    blogImageUrl,
+                    conclusion
+                };
+            }
+
+            const newSectionsDataPromise = async () => {
+
+                if (!sections) {
+                    return (undefined);
+                }
+
+                const newSections = sections!.filter(section => !section.sectionImageUrl) as {
+                    id: string;
+                    section: string;
+                    subtitle: string;
+                    content: string;
+                }[];
+
+                if (!newSections || !newSections.length) {
+                    return (undefined);
+                }
+
+                const unfiltered = await Promise.all(newSections.map(async ({ id, section, subtitle, content }) => {
+                    const imageId = sectionsWithImages.indexOf(id);
+                    let sectionImageKey: string | undefined;
+                    let sectionImageUrl: string | undefined;
+
+                    if (imageId !== -1) {
+                        const sectionImage = sectionImages[imageId];
+                        const {
+                            key,
+                            publicUrl
+                        } = await this.r2.uploadFile(sectionImage, "blogs/sections");
+                        sectionImageKey = key;
+                        sectionImageUrl = publicUrl;
+                    };
+
+                    return {
+                        id,
+                        section,
+                        subtitle,
+                        content,
+                        sectionImageKey,
+                        sectionImageUrl
+                    }
+                }));
+
+                const filtered = unfiltered.filter((section): section is NonNullable<typeof section> => section !== undefined);
+
+                return (filtered);
+            }
+
+            const updatedSectionsDataPromise = async () => {
+
+                if (!sections) {
+                    return (undefined);
+                }
+
+                const updatedSections = sections!.filter(section => section.sectionImageUrl) as {
+                    id: string;
+                    section: string;
+                    subtitle: string;
+                    content: string;
+                    sectionImageKey: string | undefined;
+                    sectionImageUrl: string | undefined;
+                }[];
+
+                this.logger.log('updated sections', updatedSections)
+
+                if (!updatedSections || !updatedSections.length) {
+                    return (undefined);
+                }
+
+                const updateData = await Promise.all(updatedSections.map(async (section) => {
+                    const imageId = sectionsWithImages.indexOf(section.id);
+                    let sectionImageKey: string | undefined;
+                    let sectionImageUrl: string | undefined;
+
+                    if (imageId !== -1) {
+                        await this.r2.deleteFile(section.sectionImageKey!);
+                        const sectionImage = sectionImages[imageId];
+                        const {
+                            key,
+                            publicUrl
+                        } = await this.r2.uploadFile(sectionImage, "blogs/sections");
+                        sectionImageKey = key;
+                        sectionImageUrl = publicUrl;
+                    };
+
+                    return {
+                        where: {
+                            id: section.id
+                        },
+                        data: {
+                            ...section,
+                            sectionImageKey,
+                            sectionImageUrl
+                        }
+                    };
+                }));
+
+                this.logger.log('update data', updateData);
+                return (updateData);
+            };
+
+            const deletedSectionsIdsPromise = async () => {
+                const existingSectionsIds = await this.prisma.section.findMany({
+                    where: {
+                        blogId
+                    }
+                }).then(sections => sections.map(section => section.id));
+
+                const incomingSectionsIds = sections.map(section => section.id);
+
+                const incomingSectionsIdsSet = new Set(incomingSectionsIds);
+                const deletedSectionsIds = existingSectionsIds.filter(id => !incomingSectionsIdsSet.has(id));
+
+                return (deletedSectionsIds)
+            }
+
+            const [blogData, newSectionsData, updatedSectionsData, deletedSectionsIds] = await Promise.all([
+                await blogDataPromise(),
+                await newSectionsDataPromise(),
+                await updatedSectionsDataPromise(),
+                await deletedSectionsIdsPromise(),
+            ])
+
             const updatedBlog = await this.prisma.blog.update({
                 where: { id: blogId },
                 data: {
-                    ...dto
+                    ...blogData,
+                    sections: {
+                        updateMany: updatedSectionsData,
+                        ...(newSectionsData && {
+                            createMany: {
+                                data: newSectionsData
+                            }
+                        }),
+                        ...(deletedSectionsIds && deletedSectionsIds.length && {
+                            deleteMany: {
+                                id: {
+                                    in: deletedSectionsIds
+                                }
+                            }
+                        })
+                    }
                 },
             });
 
