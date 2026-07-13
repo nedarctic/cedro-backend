@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     Patch,
@@ -8,7 +9,8 @@ import {
     Query,
     UploadedFiles,
     UseGuards,
-    UseInterceptors
+    UseInterceptors,
+    Logger
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../auth/decorators/role.decorator';
@@ -22,6 +24,7 @@ import { type Blog, type Section } from '../generated/prisma/client';
 
 @Controller('blogs')
 export class BlogsController {
+    private readonly logger = new Logger(BlogsController.name);
     constructor(
         private readonly blogsService: BlogsService
     ) { }
@@ -35,14 +38,17 @@ export class BlogsController {
     ]))
     @Post()
     async createBlog(
-        @Body() dto: {blog: string},
-        @UploadedFiles() files: { blogImage: Express.Multer.File, sectionImages: Express.Multer.File[] }
+        @Body() dto: { blog: string, sectionsWithImages: string },
+        @UploadedFiles() files: { blogImage: Express.Multer.File[], sectionImages: Express.Multer.File[] }
     ) {
         const blogData = JSON.parse(dto.blog) as CreateBlogDto;
+        const { sectionsWithImages }: { sectionsWithImages: string[] } = JSON.parse(dto.sectionsWithImages);
+
         return await this.blogsService.createBlog(
             files.blogImage,
             files.sectionImages,
-            blogData
+            blogData,
+            sectionsWithImages
         );
     }
 
@@ -69,30 +75,11 @@ export class BlogsController {
         return await this.blogsService.updateBlog(blogId, dto);
     }
 
-    // update blog section by id
-    @UseGuards(JwtAuthGuard, RoleGuard)
-    @Roles(UserRole.SUPER_ADMIN)
-    @Patch(':sectionId/section')
-    async updateBlogSection(
-        @Query('sectionId') sectionId: string,
-        @Body() dto: Section
-    ) {
-        return await this.blogsService.updateBlogSection(sectionId, dto);
-    }
-
     // delete blog by id
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
-    @Post(':blogId/delete')
-    async deleteBlog(@Query('blogId') blogId: string) {
+    @Delete(':blogId')
+    async deleteBlog(@Param('blogId') blogId: string) {
         return await this.blogsService.deleteBlog(blogId);
-    }
-
-    // delete blog section by id
-    @UseGuards(JwtAuthGuard, RoleGuard)
-    @Roles(UserRole.SUPER_ADMIN)
-    @Post(':sectionId/section/delete')
-    async deleteBlogSection(@Query('sectionId') sectionId: string) {
-        return await this.blogsService.deleteBlogSection(sectionId);
     }
 }
