@@ -10,6 +10,7 @@ import {
     UploadedFiles,
     UseGuards,
     UseInterceptors,
+    Logger
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../auth/decorators/role.decorator';
@@ -20,9 +21,11 @@ import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { type Blog, type Section } from '../generated/prisma/client';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Controller('blogs')
 export class BlogsController {
+    private readonly logger = new Logger(BlogsController.name);
     constructor(
         private readonly blogsService: BlogsService
     ) { }
@@ -65,12 +68,23 @@ export class BlogsController {
     // update blog by id
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Roles(UserRole.SUPER_ADMIN)
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: "blogImage" },
+        { name: "sectionImages" }
+    ]))
     @Patch(':blogId')
     async updateBlog(
-        @Query('blogId') blogId: string,
-        @Body() dto: Blog
+        @Param('blogId') blogId: string,
+        @Body() dto: { blog: string, sectionsWithImages: string },
+        @UploadedFiles() files: { blogImage: Express.Multer.File[], sectionImages: Express.Multer.File[] }
     ) {
-        return await this.blogsService.updateBlog(blogId, dto);
+        const { blogData }: { blogData: UpdateBlogDto } = JSON.parse(dto.blog);
+        const { sectionsWithImages }: { sectionsWithImages: string[] } = JSON.parse(dto.sectionsWithImages);
+
+        this.logger.log('UPDATING BLOG...')
+        this.logger.log('BLOG', blogData)
+        this.logger.log("sections with images", sectionsWithImages);
+        return await this.blogsService.updateBlog(blogId, blogData, files, sectionsWithImages);
     }
 
     // delete blog by id
