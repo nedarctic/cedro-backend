@@ -9,23 +9,20 @@ import {
     Query,
     UploadedFiles,
     UseGuards,
-    UseInterceptors,
-    Logger
+    UseInterceptors
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../auth/decorators/role.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { RoleGuard } from '../auth/guards/role.guard';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 import { UserRole } from '../generated/prisma/enums';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
-import { PaginationDto } from '../common/dtos/pagination.dto';
-import { type Blog, type Section } from '../generated/prisma/client';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Controller('blogs')
 export class BlogsController {
-    private readonly logger = new Logger(BlogsController.name);
     constructor(
         private readonly blogsService: BlogsService
     ) { }
@@ -81,9 +78,6 @@ export class BlogsController {
         const { blogData }: { blogData: UpdateBlogDto } = JSON.parse(dto.blog);
         const { sectionsWithImages }: { sectionsWithImages: string[] } = JSON.parse(dto.sectionsWithImages);
 
-        this.logger.log('UPDATING BLOG...')
-        this.logger.log('BLOG', blogData)
-        this.logger.log("sections with images", sectionsWithImages);
         return await this.blogsService.updateBlog(blogId, blogData, files, sectionsWithImages);
     }
 
