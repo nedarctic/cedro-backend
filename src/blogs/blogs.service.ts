@@ -1,18 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PaginationDto } from '../common/dtos/pagination.dto';
-import { Blog, Section } from '../generated/prisma/client';
+import { Section } from '../generated/prisma/client';
 import { BlogWhereInput } from '../generated/prisma/models';
 import { PrismaService } from '../prisma/prisma.service';
 import { R2Service } from '../r2/r2.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 import { BlogNotFoundException } from './exceptions/blog-not-found.exception';
 import { SectionNotFoundException } from './exceptions/section-not-found.exception';
-import { SectionDto, UpdateBlogDto } from './dto/update-blog.dto';
-import { string } from 'joi';
 
 @Injectable()
-export class BlogsService {
-    private readonly logger = new Logger(BlogsService.name);
+export class BlogsService {      
     constructor(
         private readonly prisma: PrismaService,
         private readonly r2: R2Service
@@ -359,8 +357,6 @@ export class BlogsService {
                     sectionImageUrl: string | undefined;
                 }[];
 
-                this.logger.log('updated sections', updatedSections)
-
                 if (!updatedSections || !updatedSections.length) {
                     return (undefined);
                 }
@@ -392,8 +388,6 @@ export class BlogsService {
                         }
                     };
                 }));
-
-                this.logger.log('update data', updateData);
                 return (updateData);
             };
 
