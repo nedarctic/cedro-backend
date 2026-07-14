@@ -268,6 +268,14 @@ export class BlogsService {
                 sectionImages
             } = files;
 
+            const existingSectionsIds = await this.prisma.section.findMany({
+                where: {
+                    blogId
+                }
+            }).then(sections => sections.map(section => section.id));
+
+            const existingSectionsIdsSet = new Set(existingSectionsIds);
+
             const blogDataPromise = async () => {
 
                 let blogImageKey: string | undefined;
@@ -295,7 +303,7 @@ export class BlogsService {
                     return (undefined);
                 }
 
-                const newSections = sections!.filter(section => !section.sectionImageUrl) as {
+                const newSections = sections!.filter(section => !existingSectionsIdsSet.has(section.id)) as {
                     id: string;
                     section: string;
                     subtitle: string;
@@ -342,7 +350,7 @@ export class BlogsService {
                     return (undefined);
                 }
 
-                const updatedSections = sections!.filter(section => section.sectionImageUrl) as {
+                const updatedSections = sections!.filter(section => existingSectionsIdsSet.has(section.id)) as {
                     id: string;
                     section: string;
                     subtitle: string;
@@ -390,17 +398,9 @@ export class BlogsService {
             };
 
             const deletedSectionsIdsPromise = async () => {
-                const existingSectionsIds = await this.prisma.section.findMany({
-                    where: {
-                        blogId
-                    }
-                }).then(sections => sections.map(section => section.id));
-
                 const incomingSectionsIds = sections.map(section => section.id);
-
                 const incomingSectionsIdsSet = new Set(incomingSectionsIds);
                 const deletedSectionsIds = existingSectionsIds.filter(id => !incomingSectionsIdsSet.has(id));
-
                 return (deletedSectionsIds)
             }
 
